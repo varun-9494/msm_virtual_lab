@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MSM Virtual Lab</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    /* ─── RESET & BASE ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #0f172a;
+      --navy-light: #1e293b;
+      --accent:     #3b82f6;
+      --accent2:    #6366f1;
+      --gold:       #f59e0b;
+      --text-main:  #f1f5f9;
+      --text-muted: #94a3b8;
+      --card-bg:    #ffffff;
+      --card-text:  #1e293b;
+      --border:     #334155;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    /* ─── TOP NAVIGATION BAR ───────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 64px;
+      background: var(--navy-light);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      z-index: 1000;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .nav-brand i {
+      color: var(--accent);
+      font-size: 22px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-main);
+      background: rgba(59,130,246,0.15);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Google Sign-In button */
+    #google-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #google-btn:hover { background: #2563eb; }
+
+    /* User avatar shown after login */
+    #user-info {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+    #user-info img {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+    }
+
+    /* ─── HERO SECTION ─────────────────────────────── */
+    .hero {
+      margin-top: 64px;
+      padding: 90px 32px 60px;
+      text-align: center;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated background blobs */
+    .hero::before, .hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.12;
+      animation: float 8s ease-in-out infinite;
+    }
+    .hero::before {
+      width: 500px; height: 500px;
+      background: var(--accent);
+      top: -150px; left: -100px;
+    }
+    .hero::after {
+      width: 400px; height: 400px;
+      background: var(--accent2);
+      bottom: -150px; right: -80px;
+      animation-delay: -4s;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50%       { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(59,130,246,0.2);
+      color: var(--accent);
+      border: 1px solid rgba(59,130,246,0.4);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+      position: relative;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(59,130,246,0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-main);
+      padding: 14px 32px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ─── STATS BAR ─────────────────────────────────── */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 40px 32px;
+      background: var(--navy-light);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+    }
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ─── FEATURES SECTION ──────────────────────────── */
+    .section {
+      padding: 72px 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-bottom: 48px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--navy-light);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 24px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+
+    .feature-icon {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ─── UNITS PREVIEW SECTION ─────────────────────── */
+    .units-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .unit-card {
+      background: var(--navy-light);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: var(--text-main);
+      display: block;
+    }
+    .unit-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      background: rgba(59,130,246,0.08);
+    }
+
+    .unit-number {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .unit-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .unit-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .unit-exp-count {
+      display: inline-block;
+      margin-top: 12px;
+      background: rgba(59,130,246,0.15);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────── */
+    footer {
+      background: var(--navy-light);
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    footer span { color: var(--accent); }
+
+  </style>
+</head>
+<body>
+
+  <!-- ═══ TOP NAVIGATION ════════════════════════════ -->
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <i class="fas fa-flask"></i>
+      MSM Virtual Lab
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="experiments.html">Experiments</a></li>
+      <li><a href="leaderboard.html">Leaderboard</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <!-- Shown before login -->
+      <button id="google-btn" onclick="signIn()">
+        <i class="fab fa-google"></i> Sign in
+      </button>
+      <!-- Shown after login -->
+      <div id="user-info">
+        <img id="user-avatar" src="" alt="avatar"/>
+        <span id="user-name"></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ HERO SECTION ══════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-badge">
+      <i class="fas fa-atom"></i>
+      I Year B.Tech &nbsp;·&nbsp; Mechanical Engineering &nbsp;·&nbsp; Sem II
+    </div>
+
+    <h1>
+      Material Science &amp;<br/>
+      <span>Metallurgy Virtual Lab</span>
+    </h1>
+
+    <p>
+      Explore crystal structures, phase diagrams, heat treatment and more —
+      through interactive 3D models, theory, and quizzes. Learn by doing.
+    </p>
+
+    <div class="hero-buttons">
+      <a href="experiments.html" class="btn-primary">
+        <i class="fas fa-flask"></i> Start Experimenting
+      </a>
+      <a href="#units" class="btn-secondary">
+        <i class="fas fa-book-open"></i> View Syllabus
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ STATS BAR ════════════════════════════════ -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-number" id="count-exp">13</span>
+      <div class="stat-label">Experiments</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">5</span>
+      <div class="stat-label">Units covered</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">3D</span>
+      <div class="stat-label">Interactive models</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number" id="count-quiz">65+</span>
+      <div class="stat-label">Quiz questions</div>
+    </div>
+  </div>
+
+  <!-- ═══ FEATURES ══════════════════════════════════ -->
+  <section class="section">
+    <h2 class="section-title">Everything you need to master MSM</h2>
+    <p class="section-sub">Each experiment is a complete learning module</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(59,130,246,0.15);color:#3b82f6;">
+          <i class="fas fa-cube"></i>
+        </div>
+        <h3>3D Interactive Models</h3>
+        <p>Rotate, zoom and explore crystal structures, defects and microstructures in real-time using Three.js.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(99,102,241,0.15);color:#6366f1;">
+          <i class="fas fa-book"></i>
+        </div>
+        <h3>Theory + Formulas</h3>
+        <p>Concise theory notes with key formulas, derivations and diagrams — exactly aligned to your syllabus.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">
+          <i class="fas fa-question-circle"></i>
+        </div>
+        <h3>Quizzes with Feedback</h3>
+        <p>Test your understanding with MCQ quizzes. Get instant explanations for every answer.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(16,185,129,0.15);color:#10b981;">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h3>Progress Tracking</h3>
+        <p>Your completed experiments and quiz scores are saved automatically to your profile.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(239,68,68,0.15);color:#ef4444;">
+          <i class="fas fa-file-pdf"></i>
+        </div>
+        <h3>PDF Notes Download</h3>
+        <p>Download concise PDF notes for each experiment — perfect for exam revision.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(168,85,247,0.15);color:#a855f7;">
+          <i class="fas fa-trophy"></i>
+        </div>
+        <h3>Leaderboard</h3>
+        <p>See how your quiz scores compare with classmates. Top scorers appear on the leaderboard.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ UNITS PREVIEW ═════════════════════════════ -->
+  <section class="section" id="units" style="padding-top:0;">
+    <h2 class="section-title">Course Units</h2>
+    <p class="section-sub">Click any unit to see its experiments</p>
+
+    <div class="units-grid">
+      <a href="experiments.html?unit=1" class="unit-card">
+        <div class="unit-number">Unit I</div>
+        <h3>Crystal Structure &amp; Defects</h3>
+        <p>Unit cells, FCC, BCC, HCP, point defects, dislocations</p>
+        <span class="unit-exp-count">2 experiments</span>
+      </a>
+
+      <a href="experiments.html?unit=2" class="unit-card">
+        <div class="unit-number">Unit II</div>
+        <h3>Phase Diagrams</h3>
+        <p>Binary diagrams, Fe-Fe₃C, eutectic, Miller indices</p>
+        <span class="unit-exp-count">3 experiments</span>
+      </a>
+
+      <a href="experiments.html?unit=3" class="unit-card">
+        <div class="unit-number">Unit III</div>
+        <h3>Heat Treatment</h3>
+        <p>TTT, CCT diagrams, annealing, hardening, tempering</p>
+        <span class="unit-exp-count">3 experiments</span>
+      </a>
+
+      <a href="experiments.html?unit=4" class="unit-card">
+        <div class="unit-number">Unit IV</div>
+        <h3>Alloys &amp; Cast Irons</h3>
+        <p>Alloy steels, cast irons, copper, aluminium alloys</p>
+        <span class="unit-exp-count">3 experiments</span>
+      </a>
+
+      <a href="experiments.html?unit=5" class="unit-card">
+        <div class="unit-number">Unit V</div>
+        <h3>Advanced Materials</h3>
+        <p>Ceramics, composites, polymers, graphene, CNTs</p>
+        <span class="unit-exp-count">2 experiments</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ════════════════════════════════════ -->
+  <footer>
+    <p>
+      <i class="fas fa-flask"></i>
+      <span>MSM Virtual Lab</span> &nbsp;·&nbsp;
+      Material Science &amp; Metallurgy &nbsp;·&nbsp;
+      I Year B.Tech (ME) &nbsp;·&nbsp; Sem II
+    </p>
+    <p style="margin-top:8px;">Built with Three.js · Hosted on GitHub Pages</p>
+  </footer>
+
+  <!-- ═══ GOOGLE LOGIN SCRIPT ═══════════════════════ -->
+  <script>
+    // Simple login simulation — we will replace this
+    // with real Google OAuth in Phase 6
+    function signIn() {
+      const name = prompt("Enter your name (Google login coming soon):");
+      if (name) {
+        document.getElementById('google-btn').style.display = 'none';
+        document.getElementById('user-info').style.display  = 'flex';
+        document.getElementById('user-name').textContent    = name;
+        document.getElementById('user-avatar').src =
+          `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=3b82f6&color=fff&size=64`;
+        localStorage.setItem('msm_user', name);
+      }
+    }
+
+    // Check if already logged in
+    window.addEventListener('load', () => {
+      const saved = localStorage.getItem('msm_user');
+      if (saved) {
+        document.getElementById('google-btn').style.display = 'none';
+        document.getElementById('user-info').style.display  = 'flex';
+        document.getElementById('user-name').textContent    = saved;
+        document.getElementById('user-avatar').src =
+          `https://ui-avatars.com/api/?name=${encodeURIComponent(saved)}&background=3b82f6&color=fff&size=64`;
+      }
+    });
+  </script>
+
+</body>
+</html>
