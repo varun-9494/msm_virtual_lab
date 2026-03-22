@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiment 3 - DEFECTAVIZ | BVRIT Virtual Lab</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f4efe5;
+            --panel: rgba(255, 252, 245, 0.88);
+            --panel-strong: #fffaf0;
+            --ink: #1d1d1f;
+            --muted: #5f6368;
+            --line: rgba(29, 29, 31, 0.12);
+            --accent: #c04a1a;
+            --accent-soft: rgba(192, 74, 26, 0.12);
+            --accent-deep: #7f2d12;
+            --blue: #2563eb;
+            --gold: #d97706;
+            --green: #0f766e;
+            --shadow: 0 18px 50px rgba(58, 39, 17, 0.12);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(192, 74, 26, 0.14), transparent 24%),
+                radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.14), transparent 22%),
+                linear-gradient(135deg, #efe7d7 0%, #f7f2e8 42%, #ece2cf 100%);
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 28px;
+            background: rgba(255, 250, 240, 0.84);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand img {
+            width: 52px;
+            height: auto;
+        }
+
+        .brand-mark {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #f97316, #7f2d12);
+            color: #fff;
+            box-shadow: 0 10px 24px rgba(192, 74, 26, 0.25);
+            font-size: 1.15rem;
+        }
+
+        .brand-copy h1 {
+            font-size: 1.35rem;
+            letter-spacing: 0.08em;
+        }
+
+        .brand-copy p {
+            font-size: 0.84rem;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border: 1px solid var(--accent);
+            border-radius: 999px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+            transition: 0.25s ease;
+            background: rgba(255,255,255,0.65);
+        }
+
+        .back-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            transform: translateX(-3px);
+        }
+
+        .page {
+            display: grid;
+            grid-template-columns: 320px minmax(0, 1fr) 320px;
+            gap: 20px;
+            padding: 22px;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid rgba(255,255,255,0.55);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar,
+        .details {
+            padding: 20px;
+        }
+
+        .hero-panel {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--accent-deep);
+            background: var(--accent-soft);
+            border-radius: 999px;
+            padding: 8px 12px;
+        }
+
+        .intro h2 {
+            font-size: 1.7rem;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .intro p {
+            color: var(--muted);
+            line-height: 1.65;
+            font-size: 0.95rem;
+        }
+
+        .mini-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .mini-card {
+            background: var(--panel-strong);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 12px;
+        }
+
+        .mini-card span {
+            display: block;
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .mini-card strong {
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .group-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .group-card {
+            background: rgba(255,255,255,0.72);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 14px;
+        }
+
+        .group-card h3 {
+            font-size: 0.98rem;
+            margin-bottom: 6px;
+        }
+
+        .group-card p {
+            color: var(--muted);
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .subgroup {
+            margin-bottom: 10px;
+        }
+
+        .subgroup-title {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--accent-deep);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+
+        .defect-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .defect-btn {
+            border: 1px solid var(--line);
+            background: #fff;
+            color: var(--ink);
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .defect-btn:hover,
+        .defect-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(192, 74, 26, 0.22);
+        }
+
+        .viewer-shell {
+            background: rgba(255,255,255,0.56);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 16px;
+        }
+
+        .viewer-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .viewer-title h3 {
+            font-size: 1.45rem;
+            margin-bottom: 4px;
+        }
+
+        .viewer-title p {
+            color: var(--muted);
+            line-height: 1.55;
+            font-size: 0.92rem;
+            max-width: 65ch;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid var(--line);
+            font-size: 0.8rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .viewer {
+            min-height: 480px;
+            border-radius: 20px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.9), rgba(245, 238, 224, 0.9)),
+                repeating-linear-gradient(45deg, rgba(192, 74, 26, 0.03) 0 8px, transparent 8px 16px);
+            border: 1px solid rgba(29, 29, 31, 0.08);
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .viewer svg {
+            width: 100%;
+            height: 100%;
+            min-height: 480px;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid var(--line);
+            padding: 8px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.12);
+        }
+
+        .details-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .detail-card {
+            background: rgba(255,255,255,0.78);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 16px;
+        }
+
+        .detail-card h4 {
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .detail-card p,
+        .detail-card li {
+            color: var(--ink);
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .detail-card ul {
+            padding-left: 18px;
+        }
+
+        .detail-card li + li {
+            margin-top: 6px;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            background: var(--accent-soft);
+            color: var(--accent-deep);
+            border-radius: 999px;
+            padding: 7px 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .credits {
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 1280px) {
+            .page {
+                grid-template-columns: 290px minmax(0, 1fr);
+            }
+
+            .details {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 900px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .page {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+
+            .mini-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .viewer-header {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .brand {
+                align-items: flex-start;
+            }
+
+            .brand-copy h1 {
+                font-size: 1.08rem;
+            }
+
+            .mini-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .viewer svg {
+                min-height: 380px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <img src="../bvrit-logo.png" alt="BVRIT">
+            <div class="brand-mark"><i class="fas fa-bug"></i></div>
+            <div class="brand-copy">
+                <h1>DEFECTAVIZ</h1>
+                <p>Experiment 3 | Crystal Defects Virtual Demonstrator</p>
+            </div>
+        </div>
+        <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Lab</a>
+    </header>
+
+    <main class="page">
+        <aside class="panel sidebar">
+            <div class="section-label">Defect Map</div>
+            <div class="group-list" id="groupList"></div>
+        </aside>
+
+        <section class="panel hero-panel">
+            <div class="eyebrow"><i class="fas fa-microscope"></i> Learn by visual comparison</div>
+            <div class="intro">
+                <h2>Crystal defects from atomic scale to macroscopic failure</h2>
+                <p>
+                    This module demonstrates how ideal crystal order breaks down. Select a defect family, then switch between
+                    individual defect types to compare lattice distortion, missing atoms, dislocations, boundaries and bulk flaws.
+                </p>
+            </div>
+
+            <div class="mini-grid">
+                <div class="mini-card">
+                    <span>Point</span>
+                    <strong>Vacancy, impurity, Frenkel and Schottky defects</strong>
+                </div>
+                <div class="mini-card">
+                    <span>Line</span>
+                    <strong>Edge, screw and mixed dislocations</strong>
+                </div>
+                <div class="mini-card">
+                    <span>Surface</span>
+                    <strong>Grain boundaries and twin boundaries</strong>
+                </div>
+                <div class="mini-card">
+                    <span>Volume</span>
+                    <strong>Voids, porosity, cracks and inclusions</strong>
+                </div>
+            </div>
+
+            <div class="viewer-shell">
+                <div class="viewer-header">
+                    <div class="viewer-title">
+                        <h3 id="viewerName">Vacancy</h3>
+                        <p id="viewerSummary"></p>
+                    </div>
+                    <div class="badge" id="familyBadge"></div>
+                </div>
+                <div class="viewer" id="viewerStage"></div>
+                <div class="legend" id="legend"></div>
+            </div>
+        </section>
+
+        <aside class="panel details">
+            <div class="details-grid">
+                <div class="detail-card">
+                    <h4>Mechanism</h4>
+                    <p id="mechanismText"></p>
+                </div>
+                <div class="detail-card">
+                    <h4>Visual Cues</h4>
+                    <ul id="visualCues"></ul>
+                </div>
+                <div class="detail-card">
+                    <h4>Engineering Significance</h4>
+                    <p id="impactText"></p>
+                </div>
+                <div class="detail-card">
+                    <h4>Examples</h4>
+                    <div class="chip-row" id="exampleChips"></div>
+                </div>
+                <div class="detail-card">
+                    <h4>Coverage in this experiment</h4>
+                    <div class="chip-row">
+                        <span class="chip">Non-ionic vacancy</span>
+                        <span class="chip">Substitutional impurity</span>
+                        <span class="chip">Interstitial impurity</span>
+                        <span class="chip">Frenkel defect</span>
+                        <span class="chip">Schottky defect</span>
+                        <span class="chip">Edge dislocation</span>
+                        <span class="chip">Screw dislocation</span>
+                        <span class="chip">Mixed dislocation</span>
+                        <span class="chip">Grain boundary</span>
+                        <span class="chip">Twin boundary</span>
+                        <span class="chip">Void</span>
+                        <span class="chip">Porosity</span>
+                        <span class="chip">Crack</span>
+                        <span class="chip">Inclusion</span>
+                    </div>
+                </div>
+                <div class="detail-card">
+                    <h4>Credits</h4>
+                    <p class="credits">
+                        Designed for the Material Science and Metallurgy Virtual Lab, Department of Mechanical Engineering, BVRIT.
+                    </p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const DEFECT_GROUPS = [
+            {
+                key: "point",
+                title: "1. Point Defects",
+                summary: "Local disruption at one or a few lattice sites.",
+                sections: [
+                    {
+                        title: "Non-ionic",
+                        items: ["vacancy", "substitutional", "interstitial"]
+                    },
+                    {
+                        title: "Ionic",
+                        items: ["frenkel", "schottky"]
+                    }
+                ]
+            },
+            {
+                key: "line",
+                title: "2. Line Defects",
+                summary: "One-dimensional lattice mismatch concentrated along a dislocation line.",
+                sections: [
+                    {
+                        title: "Dislocations",
+                        items: ["edge", "screw", "mixed"]
+                    }
+                ]
+            },
+            {
+                key: "surface",
+                title: "3. Surface Defects",
+                summary: "Two-dimensional interfaces separating crystal regions.",
+                sections: [
+                    {
+                        title: "Boundaries",
+                        items: ["grain", "twin"]
+                    }
+                ]
+            },
+            {
+                key: "volume",
+                title: "4. Volume Defects",
+                summary: "Three-dimensional flaws that occupy a measurable region.",
+                sections: [
+                    {
+                        title: "Bulk Flaws",
+                        items: ["void", "porosity", "crack", "inclusion"]
+                    }
+                ]
+            }
+        ];
+
+        const DEFECTS = {
+            vacancy: {
+                family: "Point Defect",
+                name: "Vacancy",
+                summary: "A normal lattice site is empty because an atom is missing from its expected position.",
+                mechanism: "Vacancies form when atoms leave their regular sites during solidification, diffusion or thermal agitation. Their concentration increases with temperature.",
+                cues: [
+                    "A highlighted empty lattice site marks the missing atom.",
+                    "Neighbouring atoms pull slightly inward around the vacant site.",
+                    "The rest of the lattice remains ordered, showing a localized defect."
+                ],
+                impact: "Vacancies assist diffusion and creep, and they influence sintering, recovery and high-temperature deformation.",
+                examples: ["Self-diffusion", "Thermal vacancy", "High-temperature creep"],
+                legend: [
+                    ["#b45309", "Vacant site"],
+                    ["#374151", "Host atom"],
+                    ["#f97316", "Local distortion"]
+                ],
+                draw: drawVacancy
+            },
+            substitutional: {
+                family: "Point Defect",
+                name: "Substitutional Impurity",
+                summary: "A foreign atom replaces a host atom at a normal lattice position.",
+                mechanism: "Substitutional impurities appear when solute atoms with comparable size occupy lattice sites of the solvent crystal.",
+                cues: [
+                    "One atom on a regular site has a different colour and radius.",
+                    "Nearby atoms shift to accommodate size mismatch.",
+                    "The impurity still remains on a standard lattice position."
+                ],
+                impact: "Substitutional atoms strengthen alloys through lattice strain and can change electrical, thermal and corrosion behaviour.",
+                examples: ["Cu-Ni alloys", "Brass", "Solid-solution strengthening"],
+                legend: [
+                    ["#374151", "Host atom"],
+                    ["#2563eb", "Substitutional atom"],
+                    ["#f97316", "Strain zone"]
+                ],
+                draw: drawSubstitutional
+            },
+            interstitial: {
+                family: "Point Defect",
+                name: "Interstitial Impurity",
+                summary: "A smaller foreign atom occupies the gap between normal lattice sites.",
+                mechanism: "Atoms much smaller than the host atoms fit into interstitial spaces instead of replacing the host lattice atoms.",
+                cues: [
+                    "A small atom appears between normal lattice positions.",
+                    "Surrounding atoms are pushed outward from the interstitial site.",
+                    "The host lattice points remain occupied."
+                ],
+                impact: "Interstitials produce strong lattice distortion and major strengthening effects, as seen in steel and other engineering alloys.",
+                examples: ["Carbon in iron", "Hydrogen in metals", "Nitrogen in steel"],
+                legend: [
+                    ["#374151", "Host atom"],
+                    ["#16a34a", "Interstitial atom"],
+                    ["#f97316", "Compression zone"]
+                ],
+                draw: drawInterstitial
+            },
+            frenkel: {
+                family: "Point Defect",
+                name: "Frenkel Defect",
+                summary: "In an ionic crystal, a small ion leaves its site and occupies an interstitial position, producing a vacancy-interstitial pair.",
+                mechanism: "Frenkel defects are common when cations are small enough to shift into interstitial sites without collapsing charge balance.",
+                cues: [
+                    "One cation site is vacant while the displaced cation appears nearby in an interstitial site.",
+                    "Anions remain on their regular lattice positions.",
+                    "Overall stoichiometry is preserved."
+                ],
+                impact: "Frenkel defects affect ionic conductivity and diffusion behaviour in many ceramic and ionic solids.",
+                examples: ["AgCl", "ZnS", "Ionic conductivity"],
+                legend: [
+                    ["#2563eb", "Cation"],
+                    ["#d97706", "Anion"],
+                    ["#b45309", "Vacant cation site"]
+                ],
+                draw: drawFrenkel
+            },
+            schottky: {
+                family: "Point Defect",
+                name: "Schottky Defect",
+                summary: "Equal numbers of cations and anions are missing from an ionic crystal, preserving electrical neutrality.",
+                mechanism: "Schottky defects form when paired ions leave the crystal surface or bulk lattice, leaving vacancy pairs behind.",
+                cues: [
+                    "One cation and one anion site are empty.",
+                    "The vacancy pair keeps charge neutrality intact.",
+                    "The lattice density decreases because ions are missing."
+                ],
+                impact: "Schottky defects alter density, diffusion paths and ionic transport in ceramics and salts.",
+                examples: ["NaCl", "KCl", "CsCl"],
+                legend: [
+                    ["#2563eb", "Cation"],
+                    ["#d97706", "Anion"],
+                    ["#b45309", "Vacancy pair"]
+                ],
+                draw: drawSchottky
+            },
+            edge: {
+                family: "Line Defect",
+                name: "Edge Dislocation",
+                summary: "An extra half-plane of atoms terminates inside the crystal and distorts the surrounding lattice.",
+                mechanism: "Edge dislocations arise when part of the crystal is forced to contain an incomplete atomic plane. The terminating edge is the dislocation core.",
+                cues: [
+                    "One extra half-plane ends abruptly inside the lattice.",
+                    "Atoms above the core are in compression and those below are in tension.",
+                    "The dislocation line is perpendicular to the Burgers vector."
+                ],
+                impact: "Edge dislocations enable plastic deformation and strongly influence yield strength, work hardening and recovery.",
+                examples: ["Cold working", "Slip deformation", "Strengthening by dislocation interactions"],
+                legend: [
+                    ["#374151", "Lattice lines"],
+                    ["#dc2626", "Extra half-plane"],
+                    ["#2563eb", "Dislocation core"]
+                ],
+                draw: drawEdge
+            },
+            screw: {
+                family: "Line Defect",
+                name: "Screw Dislocation",
+                summary: "The crystal planes form a helical ramp around the dislocation line due to shear distortion.",
+                mechanism: "Screw dislocations originate from shear stress that shifts one part of the crystal relative to the other.",
+                cues: [
+                    "Atomic planes step upward like a spiral staircase.",
+                    "The Burgers vector is parallel to the dislocation line.",
+                    "Slip can occur on multiple planes around the line."
+                ],
+                impact: "Screw dislocations promote slip and contribute to ductility, cross-slip and plastic flow.",
+                examples: ["Shear deformation", "Cross-slip in FCC metals", "Plasticity"],
+                legend: [
+                    ["#374151", "Reference planes"],
+                    ["#7c3aed", "Helical step"],
+                    ["#2563eb", "Dislocation line"]
+                ],
+                draw: drawScrew
+            },
+            mixed: {
+                family: "Line Defect",
+                name: "Mixed Dislocation",
+                summary: "A practical dislocation often has both edge and screw character along different parts of the same line.",
+                mechanism: "Real dislocations curve through a crystal, causing the local geometry to shift between edge-like and screw-like behaviour.",
+                cues: [
+                    "The defect line bends through the lattice.",
+                    "One segment shows extra-plane distortion while another shows shear offset.",
+                    "The Burgers vector relation changes along the line."
+                ],
+                impact: "Mixed dislocations dominate real deformation behaviour and influence hardening, recovery and slip transfer between grains.",
+                examples: ["Curved slip lines", "Cold-worked metals", "General plastic deformation"],
+                legend: [
+                    ["#dc2626", "Edge component"],
+                    ["#7c3aed", "Screw component"],
+                    ["#2563eb", "Mixed core"]
+                ],
+                draw: drawMixed
+            },
+            grain: {
+                family: "Surface Defect",
+                name: "Grain Boundary",
+                summary: "A grain boundary is an interface where neighbouring crystals meet with different orientations.",
+                mechanism: "During solidification and recrystallization, crystals grow independently and eventually impinge, creating orientation mismatch.",
+                cues: [
+                    "Atomic rows tilt differently on either side of the boundary.",
+                    "The interface is a zone of mismatch rather than a clean fracture.",
+                    "Boundary atoms are less ordered than atoms within grains."
+                ],
+                impact: "Grain boundaries affect strength, diffusion, corrosion, electrical resistance and fracture behaviour.",
+                examples: ["Polycrystalline metals", "Hall-Petch strengthening", "Grain growth control"],
+                legend: [
+                    ["#374151", "Grain A"],
+                    ["#0f766e", "Grain B"],
+                    ["#dc2626", "Boundary region"]
+                ],
+                draw: drawGrain
+            },
+            twin: {
+                family: "Surface Defect",
+                name: "Twin Boundary",
+                summary: "A twin boundary separates two crystal regions related by a mirror symmetry.",
+                mechanism: "Twinning forms during deformation or annealing when part of the crystal reorients in a mirror-like arrangement.",
+                cues: [
+                    "Atomic arrangement on one side mirrors the other side.",
+                    "The interface is more ordered than a typical grain boundary.",
+                    "The orientation change is specific and symmetric."
+                ],
+                impact: "Twins can strengthen materials, accommodate deformation and influence texture in metals and ceramics.",
+                examples: ["Deformation twins", "Annealing twins", "HCP metals"],
+                legend: [
+                    ["#374151", "Parent lattice"],
+                    ["#0891b2", "Twin lattice"],
+                    ["#dc2626", "Twin plane"]
+                ],
+                draw: drawTwin
+            },
+            void: {
+                family: "Volume Defect",
+                name: "Void",
+                summary: "A void is a localized cavity created by missing material inside the solid.",
+                mechanism: "Voids form from shrinkage, diffusion imbalance, gas entrapment or coalescence of vacancies.",
+                cues: [
+                    "A large empty pocket appears inside the bulk lattice.",
+                    "Atoms around the cavity form the local wall of the defect.",
+                    "The missing volume is concentrated in one main region."
+                ],
+                impact: "Voids reduce load-bearing area and can initiate fracture under tensile loading or creep.",
+                examples: ["Shrinkage cavity", "Creep cavitation", "Internal cavity"],
+                legend: [
+                    ["#374151", "Solid matrix"],
+                    ["#f8fafc", "Void region"],
+                    ["#b45309", "Void boundary"]
+                ],
+                draw: drawVoid
+            },
+            porosity: {
+                family: "Volume Defect",
+                name: "Porosity",
+                summary: "Porosity refers to many small pores distributed through a material.",
+                mechanism: "Porosity develops when gases are trapped, liquid metal feeds poorly, powders do not densify fully or solidification is incomplete.",
+                cues: [
+                    "Multiple rounded pores are distributed through the microstructure.",
+                    "The material contains many small empty volumes instead of one large cavity.",
+                    "Pore clustering may appear in weaker zones."
+                ],
+                impact: "Porosity lowers density, fatigue strength, toughness and sealing performance.",
+                examples: ["Castings", "Powder metallurgy", "Additive manufacturing defects"],
+                legend: [
+                    ["#374151", "Matrix"],
+                    ["#f8fafc", "Pore"],
+                    ["#b45309", "Porous region"]
+                ],
+                draw: drawPorosity
+            },
+            crack: {
+                family: "Volume Defect",
+                name: "Crack",
+                summary: "A crack is a sharp discontinuity that can grow under stress and lead to fracture.",
+                mechanism: "Cracks initiate from stress concentration, brittle phases, thermal shock, fatigue or existing defects like pores and inclusions.",
+                cues: [
+                    "A narrow sharp path cuts through the material.",
+                    "The crack tip is pointed and concentrates stress.",
+                    "Material continuity is broken along a preferred route."
+                ],
+                impact: "Cracks are the most critical defect class for catastrophic failure because they propagate rapidly when stress intensity rises.",
+                examples: ["Fatigue crack", "Thermal crack", "Brittle fracture"],
+                legend: [
+                    ["#374151", "Matrix"],
+                    ["#111827", "Crack path"],
+                    ["#dc2626", "Crack tip"]
+                ],
+                draw: drawCrack
+            },
+            inclusion: {
+                family: "Volume Defect",
+                name: "Inclusion",
+                summary: "An inclusion is a foreign solid particle trapped inside the base material.",
+                mechanism: "Inclusions enter during melting, refining, casting or processing when non-metallic phases or contaminants remain within the solid.",
+                cues: [
+                    "Foreign particles are embedded inside the matrix.",
+                    "The inclusion shape and colour differ from the surrounding material.",
+                    "Interface mismatch causes local stress concentration."
+                ],
+                impact: "Inclusions can reduce toughness and fatigue strength, though controlled inclusions can sometimes improve machinability.",
+                examples: ["Oxides", "Sulfides", "Slag particles"],
+                legend: [
+                    ["#374151", "Matrix"],
+                    ["#7c2d12", "Inclusion"],
+                    ["#f97316", "Interaction zone"]
+                ],
+                draw: drawInclusion
+            }
+        };
+
+        let activeDefect = "vacancy";
+
+        function makeAtoms(rows, cols, dx, dy, offsetX, offsetY, color, radius) {
+            let html = "";
+            for (let row = 0; row < rows; row += 1) {
+                for (let col = 0; col < cols; col += 1) {
+                    const x = offsetX + col * dx;
+                    const y = offsetY + row * dy;
+                    html += "<circle cx=\"" + x + "\" cy=\"" + y + "\" r=\"" + radius + "\" fill=\"" + color + "\" />";
+                }
+            }
+            return html;
+        }
+
+        function latticeGrid(rows, cols, skipSet, overrides) {
+            let html = "";
+            for (let row = 0; row < rows; row += 1) {
+                for (let col = 0; col < cols; col += 1) {
+                    const key = row + "-" + col;
+                    if (skipSet && skipSet.has(key)) continue;
+                    const x = 94 + col * 78;
+                    const y = 78 + row * 62;
+                    const node = overrides && overrides[key] ? overrides[key] : {};
+                    const fill = node.fill || "#374151";
+                    const radius = node.r || 16;
+                    html += "<circle cx=\"" + x + "\" cy=\"" + y + "\" r=\"" + radius + "\" fill=\"" + fill + "\" />";
+                }
+            }
+            return html;
+        }
+
+        function svgFrame(content, extras) {
+            return "<svg viewBox=\"0 0 720 500\" role=\"img\" aria-label=\"Crystal defect visualization\">" +
+                "<rect x=\"0\" y=\"0\" width=\"720\" height=\"500\" fill=\"transparent\" />" +
+                (extras || "") +
+                content +
+                "</svg>";
+        }
+
+        function drawVacancy() {
+            const skip = new Set(["3-4"]);
+            const distort = "<circle cx=\"406\" cy=\"264\" r=\"24\" fill=\"none\" stroke=\"#b45309\" stroke-width=\"4\" stroke-dasharray=\"8 8\" />" +
+                "<line x1=\"330\" y1=\"260\" x2=\"378\" y2=\"262\" stroke=\"#f97316\" stroke-width=\"4\" stroke-linecap=\"round\" />" +
+                "<line x1=\"482\" y1=\"260\" x2=\"434\" y2=\"262\" stroke=\"#f97316\" stroke-width=\"4\" stroke-linecap=\"round\" />" +
+                "<line x1=\"408\" y1=\"196\" x2=\"408\" y2=\"232\" stroke=\"#f97316\" stroke-width=\"4\" stroke-linecap=\"round\" />" +
+                "<line x1=\"408\" y1=\"332\" x2=\"408\" y2=\"296\" stroke=\"#f97316\" stroke-width=\"4\" stroke-linecap=\"round\" />";
+            return svgFrame(latticeGrid(6, 7, skip), distort);
+        }
+
+        function drawSubstitutional() {
+            const overrides = {
+                "2-3": { fill: "#2563eb", r: 22 },
+                "2-2": { fill: "#4b5563" },
+                "2-4": { fill: "#4b5563" }
+            };
+            const halo = "<circle cx=\"328\" cy=\"202\" r=\"50\" fill=\"rgba(249,115,22,0.14)\" stroke=\"#f97316\" stroke-width=\"3\" />" +
+                "<circle cx=\"328\" cy=\"202\" r=\"22\" fill=\"#2563eb\" />";
+            return svgFrame(latticeGrid(6, 7, null, overrides), halo);
+        }
+
+        function drawInterstitial() {
+            const arrows = "<circle cx=\"367\" cy=\"233\" r=\"12\" fill=\"#16a34a\" />" +
+                "<circle cx=\"328\" cy=\"202\" r=\"18\" fill=\"#374151\" />" +
+                "<circle cx=\"406\" cy=\"202\" r=\"18\" fill=\"#374151\" />" +
+                "<circle cx=\"328\" cy=\"264\" r=\"18\" fill=\"#374151\" />" +
+                "<circle cx=\"406\" cy=\"264\" r=\"18\" fill=\"#374151\" />" +
+                "<path d=\"M347 216 L356 224\" stroke=\"#f97316\" stroke-width=\"4\" stroke-linecap=\"round\" />" +
+                "<path d=\"M387 216 L378 224\" stroke=\"#f97316\" stroke-width=\"4\" stroke-linecap=\"round\" />" +
+                "<path d=\"M347 250 L356 242\" stroke=\"#f97316\" stroke-width=\"4\" stroke-linecap=\"round\" />" +
+                "<path d=\"M387 250 L378 242\" stroke=\"#f97316\" stroke-width=\"4\" stroke-linecap=\"round\" />";
+            return svgFrame(latticeGrid(6, 7), arrows);
+        }
+
+        function drawFrenkel() {
+            let html = "";
+            for (let row = 0; row < 5; row += 1) {
+                for (let col = 0; col < 6; col += 1) {
+                    const x = 110 + col * 88;
+                    const y = 90 + row * 72;
+                    html += "<circle cx=\"" + x + "\" cy=\"" + y + "\" r=\"18\" fill=\"#d97706\" />";
+                    if (!(row === 2 && col === 2)) {
+                        html += "<circle cx=\"" + (x + 44) + "\" cy=\"" + (y + 36) + "\" r=\"11\" fill=\"#2563eb\" />";
+                    }
+                }
+            }
+            html += "<circle cx=\"374\" cy=\"270\" r=\"18\" fill=\"none\" stroke=\"#b45309\" stroke-width=\"4\" stroke-dasharray=\"7 7\" />";
+            html += "<circle cx=\"430\" cy=\"214\" r=\"11\" fill=\"#2563eb\" stroke=\"#0f172a\" stroke-width=\"2\" />";
+            html += "<line x1=\"374\" y1=\"270\" x2=\"430\" y2=\"214\" stroke=\"#f97316\" stroke-width=\"4\" stroke-linecap=\"round\" marker-end=\"url(#arrow)\" />";
+            const defs = "<defs><marker id=\"arrow\" viewBox=\"0 0 10 10\" refX=\"8\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\"><path d=\"M 0 0 L 10 5 L 0 10 z\" fill=\"#f97316\" /></marker></defs>";
+            return svgFrame(html, defs);
+        }
+
+        function drawSchottky() {
+            let html = "";
+            for (let row = 0; row < 5; row += 1) {
+                for (let col = 0; col < 6; col += 1) {
+                    const x = 110 + col * 88;
+                    const y = 90 + row * 72;
+                    if (!(row === 2 && col === 2)) {
+                        html += "<circle cx=\"" + x + "\" cy=\"" + y + "\" r=\"18\" fill=\"#d97706\" />";
+                    } else {
+                        html += "<circle cx=\"" + x + "\" cy=\"" + y + "\" r=\"22\" fill=\"none\" stroke=\"#b45309\" stroke-width=\"4\" stroke-dasharray=\"7 7\" />";
+                    }
+                    const cx = x + 44;
+                    const cy = y + 36;
+                    if (!(row === 2 && col === 2)) {
+                        html += "<circle cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"11\" fill=\"#2563eb\" />";
+                    } else {
+                        html += "<circle cx=\"" + cx + "\" cy=\"" + cy + "\" r=\"15\" fill=\"none\" stroke=\"#b45309\" stroke-width=\"4\" stroke-dasharray=\"6 6\" />";
+                    }
+                }
+            }
+            return svgFrame(html);
+        }
+
+        function drawEdge() {
+            let html = "";
+            for (let row = 0; row < 6; row += 1) {
+                const y = 70 + row * 62;
+                html += "<line x1=\"80\" y1=\"" + y + "\" x2=\"640\" y2=\"" + y + "\" stroke=\"#9ca3af\" stroke-width=\"3\" />";
+            }
+            for (let col = 0; col < 8; col += 1) {
+                const x = 100 + col * 70;
+                html += "<line x1=\"" + x + "\" y1=\"70\" x2=\"" + x + "\" y2=\"380\" stroke=\"#d1d5db\" stroke-width=\"2\" />";
+            }
+            for (let row = 0; row < 4; row += 1) {
+                const y = 70 + row * 62;
+                html += "<line x1=\"100\" y1=\"" + y + "\" x2=\"360\" y2=\"" + y + "\" stroke=\"#dc2626\" stroke-width=\"6\" stroke-linecap=\"round\" />";
+            }
+            html += "<circle cx=\"360\" cy=\"256\" r=\"16\" fill=\"#2563eb\" />";
+            html += "<path d=\"M380 256 C430 250, 470 236, 520 214\" stroke=\"#f97316\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\" />";
+            html += "<path d=\"M380 270 C430 286, 470 300, 520 322\" stroke=\"#f97316\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\" />";
+            return svgFrame(html);
+        }
+
+        function drawScrew() {
+            let html = "";
+            for (let step = 0; step < 8; step += 1) {
+                const y = 90 + step * 42;
+                html += "<path d=\"M110 " + y + " C220 " + (y - 18) + ", 310 " + (y + 18) + ", 400 " + y + " S560 " + (y - 18) + ", 620 " + y + "\" stroke=\"#374151\" stroke-width=\"3\" fill=\"none\" />";
+            }
+            html += "<path d=\"M360 70 C420 120, 300 170, 360 220 C420 270, 300 320, 360 370\" stroke=\"#7c3aed\" stroke-width=\"8\" fill=\"none\" stroke-linecap=\"round\" />";
+            html += "<line x1=\"360\" y1=\"70\" x2=\"360\" y2=\"390\" stroke=\"#2563eb\" stroke-width=\"4\" stroke-dasharray=\"9 8\" />";
+            return svgFrame(html);
+        }
+
+        function drawMixed() {
+            const edgePart = "<line x1=\"98\" y1=\"128\" x2=\"332\" y2=\"128\" stroke=\"#dc2626\" stroke-width=\"6\" stroke-linecap=\"round\" />" +
+                "<line x1=\"98\" y1=\"190\" x2=\"332\" y2=\"190\" stroke=\"#dc2626\" stroke-width=\"6\" stroke-linecap=\"round\" />" +
+                "<circle cx=\"332\" cy=\"221\" r=\"14\" fill=\"#2563eb\" />";
+            const screwPart = "<path d=\"M388 96 C440 142, 350 188, 408 236 C458 280, 370 324, 428 368\" stroke=\"#7c3aed\" stroke-width=\"8\" fill=\"none\" stroke-linecap=\"round\" />";
+            let base = "";
+            for (let row = 0; row < 6; row += 1) {
+                base += "<line x1=\"80\" y1=\"" + (78 + row * 62) + "\" x2=\"640\" y2=\"" + (78 + row * 62) + "\" stroke=\"#cbd5e1\" stroke-width=\"2\" />";
+            }
+            for (let col = 0; col < 8; col += 1) {
+                base += "<line x1=\"" + (96 + col * 68) + "\" y1=\"74\" x2=\"" + (96 + col * 68) + "\" y2=\"388\" stroke=\"#e5e7eb\" stroke-width=\"2\" />";
+            }
+            return svgFrame(base + edgePart + screwPart);
+        }
+
+        function drawGrain() {
+            let left = "";
+            let right = "";
+            for (let row = 0; row < 6; row += 1) {
+                for (let col = 0; col < 4; col += 1) {
+                    left += "<circle cx=\"" + (96 + col * 76 + (row % 2 ? 18 : 0)) + "\" cy=\"" + (86 + row * 60) + "\" r=\"15\" fill=\"#374151\" />";
+                }
+            }
+            for (let row = 0; row < 6; row += 1) {
+                for (let col = 0; col < 4; col += 1) {
+                    right += "<circle cx=\"" + (406 + col * 62 - row * 6) + "\" cy=\"" + (92 + row * 58) + "\" r=\"15\" fill=\"#0f766e\" />";
+                }
+            }
+            const boundary = "<path d=\"M358 44 C334 128, 388 178, 362 246 C338 314, 386 368, 354 454\" stroke=\"#dc2626\" stroke-width=\"8\" fill=\"none\" stroke-linecap=\"round\" />";
+            return svgFrame(left + right, boundary);
+        }
+
+        function drawTwin() {
+            let html = "";
+            for (let row = 0; row < 6; row += 1) {
+                for (let col = 0; col < 4; col += 1) {
+                    html += "<circle cx=\"" + (108 + col * 74 + (row % 2 ? 16 : 0)) + "\" cy=\"" + (86 + row * 60) + "\" r=\"15\" fill=\"#374151\" />";
+                    html += "<circle cx=\"" + (612 - col * 74 - (row % 2 ? 16 : 0)) + "\" cy=\"" + (86 + row * 60) + "\" r=\"15\" fill=\"#0891b2\" />";
+                }
+            }
+            const plane = "<line x1=\"360\" y1=\"52\" x2=\"360\" y2=\"446\" stroke=\"#dc2626\" stroke-width=\"7\" stroke-dasharray=\"12 10\" />";
+            return svgFrame(html, plane);
+        }
+
+        function drawVoid() {
+            const base = makeAtoms(6, 8, 70, 58, 88, 82, "#374151", 14);
+            const cavity = "<ellipse cx=\"362\" cy=\"248\" rx=\"94\" ry=\"76\" fill=\"#fffaf0\" stroke=\"#b45309\" stroke-width=\"6\" />";
+            return svgFrame(base, cavity);
+        }
+
+        function drawPorosity() {
+            const base = makeAtoms(6, 8, 70, 58, 88, 82, "#374151", 14);
+            const pores = [
+                [196, 170, 20],
+                [278, 224, 16],
+                [352, 162, 24],
+                [438, 242, 14],
+                [510, 194, 18],
+                [582, 278, 16],
+                [274, 320, 22],
+                [454, 338, 20]
+            ].map(function(pore) {
+                return "<circle cx=\"" + pore[0] + "\" cy=\"" + pore[1] + "\" r=\"" + pore[2] + "\" fill=\"#fffaf0\" stroke=\"#b45309\" stroke-width=\"4\" />";
+            }).join("");
+            return svgFrame(base, pores);
+        }
+
+        function drawCrack() {
+            const base = makeAtoms(6, 8, 70, 58, 88, 82, "#374151", 14);
+            const crack = "<path d=\"M90 360 L180 320 L250 336 L318 276 L380 296 L462 222 L552 238 L632 180\" stroke=\"#111827\" stroke-width=\"8\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" />" +
+                "<circle cx=\"632\" cy=\"180\" r=\"12\" fill=\"#dc2626\" />";
+            return svgFrame(base, crack);
+        }
+
+        function drawInclusion() {
+            const base = makeAtoms(6, 8, 70, 58, 88, 82, "#374151", 14);
+            const foreign = "<ellipse cx=\"356\" cy=\"242\" rx=\"98\" ry=\"58\" fill=\"#7c2d12\" stroke=\"#f97316\" stroke-width=\"5\" />" +
+                "<ellipse cx=\"356\" cy=\"242\" rx=\"124\" ry=\"82\" fill=\"none\" stroke=\"rgba(249,115,22,0.35)\" stroke-width=\"8\" />";
+            return svgFrame(base, foreign);
+        }
+
+        function buildSidebar() {
+            const groupList = document.getElementById("groupList");
+            groupList.innerHTML = DEFECT_GROUPS.map(function(group) {
+                const sections = group.sections.map(function(section) {
+                    const buttons = section.items.map(function(key) {
+                        const defect = DEFECTS[key];
+                        const active = key === activeDefect ? " active" : "";
+                        return "<button class=\"defect-btn" + active + "\" data-defect=\"" + key + "\">" + defect.name + "</button>";
+                    }).join("");
+                    return "<div class=\"subgroup\"><div class=\"subgroup-title\">" + section.title + "</div><div class=\"defect-buttons\">" + buttons + "</div></div>";
+                }).join("");
+                return "<div class=\"group-card\"><h3>" + group.title + "</h3><p>" + group.summary + "</p>" + sections + "</div>";
+            }).join("");
+
+            document.querySelectorAll(".defect-btn").forEach(function(button) {
+                button.addEventListener("click", function() {
+                    activeDefect = button.getAttribute("data-defect");
+                    render();
+                });
+            });
+        }
+
+        function renderLegend(items) {
+            document.getElementById("legend").innerHTML = items.map(function(item) {
+                return "<div class=\"legend-item\"><span class=\"swatch\" style=\"background:" + item[0] + "\"></span>" + item[1] + "</div>";
+            }).join("");
+        }
+
+        function renderList(listId, items) {
+            document.getElementById(listId).innerHTML = items.map(function(item) {
+                return "<li>" + item + "</li>";
+            }).join("");
+        }
+
+        function renderExamples(items) {
+            document.getElementById("exampleChips").innerHTML = items.map(function(item) {
+                return "<span class=\"chip\">" + item + "</span>";
+            }).join("");
+        }
+
+        function render() {
+            buildSidebar();
+            const defect = DEFECTS[activeDefect];
+            document.getElementById("viewerName").textContent = defect.name;
+            document.getElementById("viewerSummary").textContent = defect.summary;
+            document.getElementById("familyBadge").innerHTML = "<i class=\"fas fa-layer-group\"></i> " + defect.family;
+            document.getElementById("mechanismText").textContent = defect.mechanism;
+            document.getElementById("impactText").textContent = defect.impact;
+            document.getElementById("viewerStage").innerHTML = defect.draw();
+            renderLegend(defect.legend);
+            renderList("visualCues", defect.cues);
+            renderExamples(defect.examples);
+        }
+
+        render();
+    </script>
+</body>
+</html>

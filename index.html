@@ -1,1767 +1,613 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Virtual Lab – Material Science & Metallurgy | BVRIT</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@700&family=DM+Mono&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --white:      #ffffff;
-      --bg:         #f5f4f0;
-      --bg2:        #eceae3;
-      --surface:    #ffffff;
-      --navy:       #1a2744;
-      --navy2:      #243060;
-      --orange:     #e05c1a;
-      --orange2:    #f07833;
-      --teal:       #1a7f74;
-      --gold:       #c9922a;
-      --text:       #1c1c1e;
-      --muted:      #6b6b72;
-      --border:     #dddbd3;
-      --shadow:     0 2px 16px rgba(26,39,68,0.08);
-      --shadow-lg:  0 8px 40px rgba(26,39,68,0.13);
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    /* ── INSTITUTE BANNER ─────────────────────────── */
-    .inst-banner {
-      background: var(--navy);
-      color: #fff;
-      padding: 10px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .inst-banner-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .inst-banner img {
-      height: 40px;
-      width: auto;
-      filter: brightness(0) invert(1);
-    }
-    .inst-name { font-size: 13px; font-weight: 600; line-height: 1.4; }
-    .inst-sub  { font-size: 11px; opacity: 0.72; }
-    .inst-banner-right {
-      display: flex;
-      gap: 18px;
-      font-size: 12px;
-      opacity: 0.82;
-      flex-wrap: wrap;
-    }
-    .inst-banner-right a {
-      color: #fff;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .inst-banner-right a:hover { opacity: 1; color: var(--orange2); }
-
-    /* ── TOP NAV ──────────────────────────────────── */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 1px 8px rgba(26,39,68,0.06);
-    }
-    .nav-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 32px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--navy);
-      font-weight: 600;
-      font-size: 16px;
-      white-space: nowrap;
-    }
-    .nav-brand .brand-icon {
-      width: 34px; height: 34px;
-      background: var(--navy);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 15px;
-      flex-shrink: 0;
-    }
-    .nav-links {
-      display: flex;
-      gap: 4px;
-      list-style: none;
-      flex-wrap: wrap;
-    }
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      padding: 6px 13px;
-      border-radius: 7px;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.18s;
-    }
-    .nav-links a:hover, .nav-links a.active {
-      color: var(--navy);
-      background: var(--bg2);
-    }
-    .nav-cta {
-      background: var(--orange);
-      color: #fff !important;
-      border-radius: 7px;
-      padding: 7px 16px !important;
-      font-weight: 600 !important;
-    }
-    .nav-cta:hover { background: var(--orange2) !important; color: #fff !important; }
-
-    .mobile-toggle {
-      display: none;
-      background: none;
-      border: none;
-      font-size: 20px;
-      color: var(--navy);
-      cursor: pointer;
-    }
-
-    /* ── HERO ─────────────────────────────────────── */
-    .hero {
-      background: var(--navy);
-      color: #fff;
-      padding: 72px 32px 64px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 80% at 70% 50%, rgba(224,92,26,0.18) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(26,127,116,0.15) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    /* subtle grid overlay */
-    .hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-    }
-    .hero-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 48px;
-      align-items: center;
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(224,92,26,0.18);
-      border: 1px solid rgba(224,92,26,0.4);
-      color: #f5a87a;
-      padding: 5px 14px;
-      border-radius: 100px;
-      font-size: 12.5px;
-      font-weight: 500;
-      margin-bottom: 22px;
-      letter-spacing: 0.3px;
-    }
-    .hero h1 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(32px, 5vw, 54px);
-      line-height: 1.12;
-      margin-bottom: 18px;
-      font-weight: 700;
-    }
-    .hero h1 em {
-      font-style: normal;
-      color: var(--orange2);
-    }
-    .hero-desc {
-      font-size: 17px;
-      color: rgba(255,255,255,0.72);
-      max-width: 540px;
-      margin-bottom: 32px;
-      line-height: 1.7;
-    }
-    .hero-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-bottom: 36px;
-    }
-    .hero-meta-item {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.65);
-    }
-    .hero-meta-item i { color: var(--orange2); font-size: 13px; }
-    .hero-actions {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 26px;
-      border-radius: 9px;
-      font-size: 15px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
-      border: none;
-      font-family: inherit;
-    }
-    .btn-primary {
-      background: var(--orange);
-      color: #fff;
-    }
-    .btn-primary:hover {
-      background: var(--orange2);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 24px rgba(224,92,26,0.4);
-    }
-    .btn-outline {
-      background: transparent;
-      color: #fff;
-      border: 1.5px solid rgba(255,255,255,0.3);
-    }
-    .btn-outline:hover {
-      border-color: rgba(255,255,255,0.7);
-      background: rgba(255,255,255,0.07);
-    }
-
-    /* Faculty card in hero */
-    .hero-faculty {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      min-width: 200px;
-    }
-    .faculty-photo-wrap {
-      position: relative;
-    }
-    .faculty-photo {
-      width: 140px; height: 140px;
-      border-radius: 50%;
-      object-fit: cover;
-      object-position: top;
-      border: 4px solid var(--orange);
-      box-shadow: 0 0 0 8px rgba(224,92,26,0.15);
-    }
-    .faculty-badge {
-      position: absolute;
-      bottom: 4px; right: 4px;
-      width: 32px; height: 32px;
-      background: var(--orange);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 13px;
-      border: 2px solid var(--navy);
-    }
-    .faculty-info {
-      text-align: center;
-    }
-    .faculty-info strong {
-      display: block;
-      font-size: 15px;
-      color: #fff;
-      font-weight: 600;
-    }
-    .faculty-info span {
-      font-size: 12px;
-      color: rgba(255,255,255,0.6);
-      line-height: 1.5;
-    }
-    .faculty-info a {
-      display: inline-block;
-      margin-top: 8px;
-      font-size: 12px;
-      color: var(--orange2);
-      text-decoration: none;
-      border: 1px solid rgba(224,92,26,0.4);
-      padding: 3px 10px;
-      border-radius: 100px;
-    }
-    .faculty-info a:hover { background: rgba(224,92,26,0.15); }
-
-    /* ── STATS ────────────────────────────────────── */
-    .stats-strip {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-    }
-    .stats-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 32px;
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-    }
-    .stat {
-      padding: 24px 20px;
-      text-align: center;
-    }
-    .stat-num {
-      font-family: 'Playfair Display', serif;
-      font-size: 36px;
-      font-weight: 700;
-      color: var(--orange);
-      display: block;
-    }
-    .stat-lbl {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    /* ── SHARED SECTION ───────────────────────────── */
-    .section {
-      padding: 72px 32px;
-    }
-    .section-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-    }
-    .section-label {
-      font-size: 11.5px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--orange);
-      margin-bottom: 10px;
-    }
-    .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(24px, 3vw, 36px);
-      font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 12px;
-    }
-    .section-sub {
-      font-size: 16px;
-      color: var(--muted);
-      margin-bottom: 48px;
-      max-width: 600px;
-    }
-
-    /* ── INTRO STRIP ──────────────────────────────── */
-    .intro-strip {
-      background: var(--navy);
-      color: #fff;
-      padding: 28px 32px;
-    }
-    .intro-strip-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      flex-wrap: wrap;
-    }
-    .intro-strip p {
-      font-size: 15px;
-      color: rgba(255,255,255,0.8);
-      line-height: 1.7;
-      flex: 1;
-    }
-    .intro-strip strong { color: #fff; }
-    .philosophy-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(224,92,26,0.2);
-      border: 1px solid rgba(224,92,26,0.4);
-      color: #f5a87a;
-      padding: 8px 18px;
-      border-radius: 100px;
-      font-size: 14px;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    /* ── EXPERIMENTS ──────────────────────────────── */
-    .experiments-section { background: var(--bg); }
-
-    .unit-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      margin-bottom: 16px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: box-shadow 0.2s;
-    }
-    .unit-card:hover { box-shadow: var(--shadow-lg); }
-
-    .unit-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 24px;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.18s;
-    }
-    .unit-header:hover { background: var(--bg); }
-
-    .unit-header-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .unit-icon {
-      width: 44px; height: 44px;
-      border-radius: 10px;
-      background: var(--navy);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 17px;
-      flex-shrink: 0;
-    }
-    .unit-header h3 {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--navy);
-    }
-    .unit-header p {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-    .unit-header-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .exp-count-badge {
-      background: var(--bg2);
-      color: var(--navy);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 100px;
-      white-space: nowrap;
-    }
-    .chevron {
-      color: var(--muted);
-      font-size: 14px;
-      transition: transform 0.25s;
-    }
-    .chevron.open { transform: rotate(180deg); }
-
-    .unit-body {
-      display: none;
-      border-top: 1px solid var(--border);
-    }
-    .unit-body.open { display: block; }
-
-    .exp-list { padding: 8px 24px 16px; }
-
-    .exp-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--bg2);
-    }
-    .exp-item:last-child { border-bottom: none; }
-
-    .exp-left { flex: 1; }
-    .exp-num {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: var(--orange);
-      text-transform: uppercase;
-      margin-bottom: 3px;
-    }
-    .exp-item h4 {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 4px;
-    }
-    .exp-item p {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-    .exp-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .exp-tag {
-      font-size: 11px;
-      padding: 2px 9px;
-      border-radius: 100px;
-      font-weight: 500;
-    }
-    .tag-time { background: #e8f4ee; color: #1a7f74; }
-    .tag-dev  { background: #fef3e2; color: #c9922a; }
-
-    .btn-start {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--navy);
-      color: #fff;
-      padding: 9px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.18s;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .btn-start:hover {
-      background: var(--orange);
-      transform: translateX(2px);
-    }
-    .btn-start.coming {
-      background: var(--bg2);
-      color: var(--muted);
-      cursor: default;
-    }
-    .btn-start.coming:hover { transform: none; background: var(--bg2); }
-
-    /* ── OBJECTIVES ───────────────────────────────── */
-    .objectives-section { background: var(--surface); }
-
-    .obj-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
-    .obj-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px 22px;
-      transition: all 0.2s;
-    }
-    .obj-card:hover {
-      border-color: var(--orange);
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-lg);
-    }
-    .obj-icon {
-      width: 48px; height: 48px;
-      border-radius: 10px;
-      background: var(--navy);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 19px;
-      margin-bottom: 16px;
-    }
-    .obj-card h3 {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 8px;
-    }
-    .obj-card p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── VIDEO LECTURES ───────────────────────────── */
-    .videos-section { background: var(--bg); }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 22px;
-    }
-    .video-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: all 0.2s;
-    }
-    .video-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--orange);
-    }
-    .video-num-bar {
-      background: var(--navy);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 7px 16px;
-    }
-    .video-embed {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-    }
-    .video-embed iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      border: none;
-    }
-    .video-info {
-      padding: 14px 16px;
-    }
-    .video-info h4 {
-      font-size: 13.5px;
-      font-weight: 600;
-      color: var(--navy);
-      line-height: 1.45;
-      margin-bottom: 4px;
-    }
-    .video-info p {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* ── INSTRUCTIONS ─────────────────────────────── */
-    .instructions-section { background: var(--surface); }
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-    }
-    .step-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 26px 20px;
-      text-align: center;
-    }
-    .step-num {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      background: var(--orange);
-      color: #fff;
-      font-size: 17px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 14px;
-    }
-    .step-card h4 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 7px; }
-    .step-card p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
-
-    /* ── RESOURCES ────────────────────────────────── */
-    .resources-section { background: var(--bg); }
-    .res-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-    }
-    .res-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px 20px;
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      transition: all 0.18s;
-      text-decoration: none;
-      color: inherit;
-    }
-    .res-card:hover {
-      border-color: var(--orange);
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-2px);
-    }
-    .res-icon {
-      width: 44px; height: 44px;
-      border-radius: 10px;
-      background: var(--navy);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 17px;
-      flex-shrink: 0;
-    }
-    .res-card h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
-    .res-card p  { font-size: 12.5px; color: var(--muted); }
-
-    /* ── PROGRESS ─────────────────────────────────── */
-    .progress-section { background: var(--surface); }
-    .progress-notice {
-      background: var(--bg);
-      border: 1px dashed var(--border);
-      border-radius: 12px;
-      padding: 36px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 15px;
-    }
-    .progress-notice i { font-size: 32px; color: var(--orange); display: block; margin-bottom: 12px; }
-
-    /* ── FOOTER ───────────────────────────────────── */
-    footer {
-      background: var(--navy);
-      color: rgba(255,255,255,0.75);
-      padding: 56px 32px 32px;
-    }
-    .footer-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 40px;
-      margin-bottom: 40px;
-    }
-    .footer-col h3 {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: var(--orange2);
-      margin-bottom: 18px;
-    }
-    .footer-col p, .footer-col a {
-      font-size: 13.5px;
-      color: rgba(255,255,255,0.65);
-      line-height: 1.8;
-      text-decoration: none;
-      display: block;
-    }
-    .footer-col a:hover { color: #fff; }
-    .footer-col a i { width: 16px; margin-right: 6px; }
-
-    /* Person card in footer */
-    .person-card {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 14px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 14px;
-    }
-    .person-card img {
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      object-fit: cover;
-      object-position: top;
-      border: 2.5px solid var(--orange);
-      flex-shrink: 0;
-    }
-    .person-card .person-name {
-      font-size: 15px;
-      font-weight: 600;
-      color: #fff;
-      display: block;
-      margin-bottom: 3px;
-    }
-    .person-card .person-role {
-      font-size: 12px;
-      color: rgba(255,255,255,0.55);
-      line-height: 1.5;
-    }
-    .person-card .person-tag {
-      display: inline-block;
-      margin-top: 5px;
-      font-size: 11px;
-      background: rgba(224,92,26,0.25);
-      color: var(--orange2);
-      border-radius: 100px;
-      padding: 2px 8px;
-    }
-
-    .footer-divider {
-      border: none;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      margin-bottom: 24px;
-    }
-    .footer-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12.5px;
-      color: rgba(255,255,255,0.4);
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .footer-bottom a { color: rgba(255,255,255,0.5); text-decoration: none; }
-    .footer-bottom a:hover { color: #fff; }
-
-    /* ── RESPONSIVE ───────────────────────────────── */
-    @media (max-width: 768px) {
-      .hero-inner { grid-template-columns: 1fr; }
-      .hero-faculty { display: none; }
-      .nav-links { display: none; }
-      .mobile-toggle { display: block; }
-      .nav-links.open {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 60px; left: 0; right: 0;
-        background: var(--surface);
-        border-bottom: 1px solid var(--border);
-        padding: 12px 24px;
-        box-shadow: var(--shadow-lg);
-        z-index: 998;
-      }
-      .section { padding: 48px 20px; }
-      .inst-banner { padding: 10px 20px; }
-      .inst-banner-right { display: none; }
-      .video-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Lab - Material Science & Metallurgy</title>
+    
+    <!-- Link to our CSS file -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- ══ INSTITUTE BANNER ════════════════════════════ -->
-  <div class="inst-banner">
-    <div class="inst-banner-left">
-      <img src="https://bvrit.ac.in/wp-content/uploads/2023/04/BVRIT-engineering-technology-college-logo-narsapur.webp"
-           alt="BVRIT Logo" onerror="this.style.display='none'"/>
-      <div>
-        <div class="inst-name">B. V. Raju Institute of Technology, Narsapur</div>
-        <div class="inst-sub">Vishnupur, Narsapur, Medak District – 502313, Telangana, India</div>
-      </div>
-    </div>
-    <div class="inst-banner-right">
-      <a href="https://bvrit.ac.in" target="_blank"><i class="fas fa-globe"></i> bvrit.ac.in</a>
-      <a href="tel:08458222000"><i class="fas fa-phone"></i> 08458-222000</a>
-      <a href="mailto:info@bvrit.ac.in"><i class="fas fa-envelope"></i> info@bvrit.ac.in</a>
-      <a href="https://bvrit.ac.in/mech/" target="_blank"><i class="fas fa-cogs"></i> Mech. Dept.</a>
-    </div>
-  </div>
-
-  <!-- ══ HEADER / NAV ════════════════════════════════ -->
-  <header id="header">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-brand">
-        <div class="brand-icon"><i class="fas fa-flask"></i></div>
-        MSM Virtual Lab
-      </a>
-      <ul class="nav-links" id="navMenu">
-        <li><a href="#home" class="active">Home</a></li>
-        <li><a href="#experiments">Experiments</a></li>
-        <li><a href="#objectives">Objectives</a></li>
-        <li><a href="#instructions">Instructions</a></li>
-        <li><a href="#progress">Progress</a></li>
-        <li><a href="#resources">Resources</a></li>
-        <li><a href="#videos">Video Lectures</a></li>
-        <li><a href="#experiments" class="nav-cta"><i class="fas fa-play"></i> Start Lab</a></li>
-      </ul>
-      <button class="mobile-toggle" id="mobileToggle" onclick="document.getElementById('navMenu').classList.toggle('open')">
-        <i class="fas fa-bars"></i>
-      </button>
-    </div>
-  </header>
-
-  <!-- ══ HERO ════════════════════════════════════════ -->
-  <section class="hero" id="home">
-    <div class="hero-inner">
-      <div class="hero-left">
-        <div class="hero-badge">
-          <i class="fas fa-university"></i>
-          Department of Mechanical Engineering &nbsp;·&nbsp; BVRIT Narsapur
-        </div>
-        <h1>
-          Virtual Laboratory<br/>
-          <em>Material Science &amp;</em><br/>
-          <em>Metallurgy</em>
-        </h1>
-        <p class="hero-desc">
-          Interactive 3D simulations, theory modules and quizzes for
-          B.Tech Mechanical Engineering — I Year, II Semester (R25 A72C1).
-          Learn by visualising, simulating and analysing.
-        </p>
-        <div class="hero-meta">
-          <div class="hero-meta-item"><i class="fas fa-book-open"></i> Course Code: R25 A72C1</div>
-          <div class="hero-meta-item"><i class="fas fa-layer-group"></i> I Year · II Semester</div>
-          <div class="hero-meta-item"><i class="fas fa-cube"></i> 3D Interactive Models</div>
-          <div class="hero-meta-item"><i class="fas fa-trophy"></i> Leaderboard & Progress</div>
-        </div>
-        <div class="hero-actions">
-          <a href="#experiments" class="btn btn-primary">
-            <i class="fas fa-flask"></i> Start Experimenting
-          </a>
-          <a href="#instructions" class="btn btn-outline">
-            <i class="fas fa-info-circle"></i> How It Works
-          </a>
-        </div>
-      </div>
-
-      <!-- Faculty card -->
-      <div class="hero-faculty">
-        <div class="faculty-photo-wrap">
-          <img class="faculty-photo"
-               src="https://bvrit.ac.in/wp-content/uploads/2023/05/varun-faculty-bvrit-engineering-college-narsapur.webp"
-               alt="Dr. A. Varun"
-               onerror="this.src='https://ui-avatars.com/api/?name=A+Varun&size=140&background=e05c1a&color=fff'"/>
-          <div class="faculty-badge"><i class="fas fa-chalkboard-teacher"></i></div>
-        </div>
-        <div class="faculty-info">
-          <strong>Dr. A. Varun</strong>
-          <span>Associate Professor &amp; HoD<br/>Dept. of Mechanical Engineering</span>
-          <a href="https://bvrit.ac.in/mech/about-hod/" target="_blank">
-            <i class="fas fa-external-link-alt"></i> View Profile
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ STATS ════════════════════════════════════════ -->
-  <div class="stats-strip">
-    <div class="stats-inner">
-      <div class="stat"><span class="stat-num">5</span><div class="stat-lbl">Units</div></div>
-      <div class="stat"><span class="stat-num">13+</span><div class="stat-lbl">Experiments</div></div>
-      <div class="stat"><span class="stat-num">14</span><div class="stat-lbl">Video Lectures</div></div>
-      <div class="stat"><span class="stat-num">3D</span><div class="stat-lbl">Interactive Models</div></div>
-      <div class="stat"><span class="stat-num">65+</span><div class="stat-lbl">Quiz Questions</div></div>
-    </div>
-  </div>
-
-  <!-- ══ INTRO STRIP ══════════════════════════════════ -->
-  <div class="intro-strip">
-    <div class="intro-strip-inner">
-      <p>
-        This virtual laboratory provides <strong>interactive 3D simulations</strong> to understand
-        crystal structures, phase diagrams, heat treatment processes and material properties —
-        aligned to the JNTUH R25 syllabus for Mechanical Engineering students.
-      </p>
-      <div class="philosophy-pill">
-        <i class="fas fa-lightbulb"></i>
-        Visualise → Simulate → Analyse
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ EXPERIMENTS ══════════════════════════════════ -->
-  <section class="section experiments-section" id="experiments">
-    <div class="section-inner">
-      <div class="section-label">Virtual Experiments</div>
-      <h2 class="section-title">Experiments by Unit</h2>
-      <p class="section-sub">Click any unit to expand and start an experiment</p>
-
-      <!-- UNIT 1 -->
-      <div class="unit-card">
-        <div class="unit-header" onclick="toggleUnit('u1')">
-          <div class="unit-header-left">
-            <div class="unit-icon"><i class="fas fa-atom"></i></div>
-            <div>
-              <h3>UNIT-I: Crystal Structure &amp; Imperfections</h3>
-              <p>Unit cells, metallic crystal structures, point/line/surface/volume defects, dislocations, strengthening mechanisms</p>
-            </div>
-          </div>
-          <div class="unit-header-right">
-            <span class="exp-count-badge">5 Experiments</span>
-            <i class="fas fa-chevron-down chevron" id="chev-u1"></i>
-          </div>
-        </div>
-        <div class="unit-body" id="u1">
-          <div class="exp-list">
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 1</div>
-                <h4>BRAVLAT – Bravais Lattice Explorer</h4>
-                <p>Interactive 3D exploration of all 14 Bravais Lattices across 7 crystal systems</p>
-                <div class="exp-tags">
-                  <span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span>
+    <!-- HEADER SECTION -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="bvrit-logo.png" alt="BVRIT Logo" class="logo-img">
+                    <div class="logo-text">
+                        <span class="logo-title">Virtual Laboratory</span>
+                        <span class="logo-subtitle">Material Science & Metallurgy</span>
+                    </div>
                 </div>
-              </div>
-              <a href="experiments/experiment-1.html" class="btn-start">
-                Start <i class="fas fa-arrow-right"></i>
-              </a>
+                
+                <nav class="nav-menu" id="navMenu">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#experiments" class="nav-link">Experiments</a>
+                    <a href="#objectives" class="nav-link">Objectives</a>
+                    <a href="#instructions" class="nav-link">Instructions</a>
+                    <a href="#progress" class="nav-link">Progress</a>
+                    <a href="#resources" class="nav-link">Resources</a>
+                    <a href="#videos" class="nav-link">Video Lectures</a>
+                </nav>
+                
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
+        </div>
+    </header>
 
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 2</div>
-                <h4>CRYSTAVIZ – 3D Crystal Structure Visualizer</h4>
-                <p>Interactive visualization of SC, FCC, BCC and HCP crystal structures with APF and coordination number</p>
-                <div class="exp-tags">
-                  <span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span>
-                  <span class="exp-tag tag-dev"><i class="fas fa-star"></i> Developed by Hemanth Sagar Reddy (25211A0329)</span>
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Virtual Laboratory</h1>
+                <h2 class="hero-subtitle">Material Science and Metallurgy</h2>
+                <div class="course-info">
+                    <span class="course-code">R25 A72C1</span>
+                    <span class="separator">|</span>
+                    <span>B.Tech Mechanical Engineering</span>
+                    <span class="separator">|</span>
+                    <span>I Year II Semester</span>
                 </div>
-              </div>
-              <a href="experiments/experiment-2.html" class="btn-start">
-                Start <i class="fas fa-arrow-right"></i>
-              </a>
-            </div>
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 3</div>
-                <h4>CRYSTAVIZ – Crystal Defects Visualizer</h4>
-                <p>Animated 2D schematics of 14 defect types — point, line, surface &amp; volume — with real-time physics</p>
-                <div class="exp-tags">
-                  <span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span>
-                  <span class="exp-tag tag-dev"><i class="fas fa-star"></i> Developed by Hemanth Sagar Reddy (25211A0329)</span>
+                <p class="tagline">
+                    <i class="fas fa-atom"></i>
+                    Interactive Simulations for Engineering Materials Education
+                </p>
+                <div class="hero-actions">
+                    <a href="#experiments" class="btn btn-primary">Start Learning</a>
+                    <a href="#instructions" class="btn btn-secondary">How It Works</a>
                 </div>
-              </div>
-              <a href="experiments/experiment-3.html" class="btn-start">
-                Start <i class="fas fa-arrow-right"></i>
-              </a>
             </div>
+        </div>
+    </section>
 
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 4</div>
-                <h4>Point Defects Simulator</h4>
-                <p>Explore vacancies, interstitials and substitutional defects in crystal lattices</p>
-                <div class="exp-tags">
-                  <span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span>
+    <!-- INTRODUCTION SECTION -->
+    <section class="introduction">
+        <div class="container">
+            <div class="intro-content">
+                <p class="intro-text">
+                    This virtual laboratory provides <strong>interactive simulations</strong> to understand 
+                    crystal structures, phase diagrams, heat treatment processes, and material properties.
+                </p>
+                <p class="intro-text" style="font-size: 0.95rem; margin-top: 15px;">
+                    <i class="fas fa-university"></i>
+                    Department of Mechanical Engineering | B. V. Raju Institute of Technology
+                </p>
+                <div class="philosophy">
+                    <i class="fas fa-lightbulb"></i>
+                    <span><strong>Learn by Doing:</strong> Visualize → Simulate → Analyze</span>
                 </div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
             </div>
+        </div>
+    </section>
 
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 5</div>
-                <h4>Strengthening Mechanisms Simulator</h4>
-                <p>Compare grain size, solid solution, precipitation and strain hardening mechanisms</p>
-                <div class="exp-tags">
-                  <span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span>
+    <!-- EXPERIMENTS SECTION (NOW BEFORE OBJECTIVES) -->
+    <section class="experiments" id="experiments">
+        <div class="container">
+            <h2 class="section-title">Experiments by Unit</h2>
+            <p class="section-subtitle">Click on any unit to view experiments</p>
+            
+            <!-- UNIT 1 -->
+            <div class="unit-card">
+                <div class="unit-header" onclick="toggleUnit('unit1')">
+                    <div class="unit-info">
+                        <h3>
+                            <i class="fas fa-atom"></i>
+                            UNIT-I: Crystal Structure & Imperfections
+                        </h3>
+                        <span class="experiment-count">5 Experiments</span>
+                    </div>
+                    <i class="fas fa-chevron-down unit-toggle" id="unit1-toggle"></i>
                 </div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
+                <div class="unit-content" id="unit1">
+                    <div class="experiment-list">
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 1 – BRAVLAT: Bravais Lattice Explorer</h4>
+                                <p>Interactive 3D exploration of all 14 Bravais Lattices across 7 crystal systems</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                                <div style="margin-top: 8px; padding: 8px 12px; background: rgba(0, 201, 167, 0.1); border-left: 3px solid #00c9a7; border-radius: 4px;">
+                                    <p style="margin: 0; font-size: 0.85rem; color: #00c9a7;">
+                                        <i class="fas fa-atom"></i> <strong>Topic:</strong> Lattice Structures & Bravais Lattices
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="experiments/experiment-1.html" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 2 – CRYSTAVIZ: 3D Crystal Structure Visualizer</h4>
+                                <p>Interactive visualization of SC, FCC, BCC, and HCP crystal structures</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                                <div style="margin-top: 8px; padding: 8px 12px; background: rgba(255, 215, 0, 0.1); border-left: 3px solid #ffd700; border-radius: 4px;">
+                                    <p style="margin: 0; font-size: 0.85rem; color: #ffd700;">
+                                        <i class="fas fa-star"></i> <strong>Developed by:</strong> Hemanth Sagar Reddy (25211A0329)
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="experiments/experiment-2.html" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 3 – CRYSTAVIZ: Crystal Defects Visualizer</h4>
+                                <p>Animated 2D schematics of 14 defects — point, line, surface &amp; volume — with real-time physics simulations</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                                <div style="margin-top: 8px; padding: 8px 12px; background: rgba(255, 215, 0, 0.1); border-left: 3px solid #ffd700; border-radius: 4px;">
+                                    <p style="margin: 0; font-size: 0.85rem; color: #ffd700;">
+                                        <i class="fas fa-star"></i> <strong>Developed by:</strong> Hemanth Sagar Reddy (25211A0329)
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="experiments/experiment-3.html" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 4 – Point Defects Simulator</h4>
+                                <p>Explore vacancies, interstitials, and substitutional defects</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                            </div>
+                            <a href="#" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 5 – Strengthening Mechanisms Simulator</h4>
+                                <p>Compare grain size, solid solution, and strain hardening</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                            </div>
+                            <a href="#" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-          </div>
-        </div>
-      </div>
-
-      <!-- UNIT 2 -->
-      <div class="unit-card">
-        <div class="unit-header" onclick="toggleUnit('u2')">
-          <div class="unit-header-left">
-            <div class="unit-icon" style="background:var(--teal)"><i class="fas fa-project-diagram"></i></div>
-            <div>
-              <h3>UNIT-II: Solid Solutions &amp; Phase Diagrams</h3>
-              <p>Hume–Rothery rules, binary phase diagrams, eutectic/peritectic reactions, Fe–Fe₃C diagram, microstructures</p>
-            </div>
-          </div>
-          <div class="unit-header-right">
-            <span class="exp-count-badge">4 Experiments</span>
-            <i class="fas fa-chevron-down chevron" id="chev-u2"></i>
-          </div>
-        </div>
-        <div class="unit-body" id="u2">
-          <div class="exp-list">
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 6</div>
-                <h4>Binary Phase Diagram Tool</h4>
-                <p>Build and interpret binary isomorphous, eutectic and peritectic phase diagrams interactively</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
-            </div>
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 7</div>
-                <h4>Fe–Fe₃C Phase Diagram Explorer</h4>
-                <p>Navigate the iron-carbon diagram; identify ledeburite, austenite, pearlite, ferrite and cementite regions</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
-            </div>
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 8</div>
-                <h4>Lever Rule Calculator</h4>
-                <p>Apply the lever rule to calculate phase fractions and compositions from tie lines</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
-            </div>
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 9</div>
-                <h4>Pb–Sn Eutectic Phase Diagram Case Study</h4>
-                <p>Analyse a classic eutectic system and predict microstructures at various compositions</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <!-- UNIT 3 -->
-      <div class="unit-card">
-        <div class="unit-header" onclick="toggleUnit('u3')">
-          <div class="unit-header-left">
-            <div class="unit-icon" style="background:#b45309"><i class="fas fa-fire"></i></div>
-            <div>
-              <h3>UNIT-III: Heat Treatment &amp; Cooling Curves</h3>
-              <p>TTT &amp; CCT diagrams, annealing, normalising, hardening, tempering, surface hardening, austempering, martempering</p>
-            </div>
-          </div>
-          <div class="unit-header-right">
-            <span class="exp-count-badge">4 Experiments</span>
-            <i class="fas fa-chevron-down chevron" id="chev-u3"></i>
-          </div>
-        </div>
-        <div class="unit-body" id="u3">
-          <div class="exp-list">
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 10</div>
-                <h4>Heat Treatment Simulator</h4>
-                <p>Simulate annealing, normalising, hardening and tempering; observe microstructure changes</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
+            <!-- UNIT 2 -->
+            <div class="unit-card">
+                <div class="unit-header" onclick="toggleUnit('unit2')">
+                    <div class="unit-info">
+                        <h3>
+                            <i class="fas fa-project-diagram"></i>
+                            UNIT-II: Solid Solutions & Phase Diagrams
+                        </h3>
+                        <span class="experiment-count">4 Experiments</span>
+                    </div>
+                    <i class="fas fa-chevron-down unit-toggle" id="unit2-toggle"></i>
+                </div>
+                <div class="unit-content" id="unit2">
+                    <div class="experiment-list">
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 5 – Binary Phase Diagram Tool</h4>
+                                <p>Build and interpret binary phase diagrams</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                            </div>
+                            <a href="#" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 6 – Fe–Fe₃C Phase Diagram Explorer</h4>
+                                <p>Navigate the iron-carbon diagram</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                            </div>
+                            <a href="#" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 7 – Lever Rule Calculator</h4>
+                                <p>Apply lever rule to calculate phase fractions</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                            </div>
+                            <a href="#" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 8 – Pb–Sn Phase Diagram Case Study</h4>
+                                <p>Analyze eutectic systems using Pb-Sn</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                            </div>
+                            <a href="#" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 11</div>
-                <h4>TTT Diagram Explorer</h4>
-                <p>Isothermal transformation diagrams; trace martensite, bainite and pearlite formation paths</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
+            <!-- UNIT 3 -->
+            <div class="unit-card">
+                <div class="unit-header" onclick="toggleUnit('unit3')">
+                    <div class="unit-info">
+                        <h3>
+                            <i class="fas fa-temperature-high"></i>
+                            UNIT-III: Heat Treatment & Cooling
+                        </h3>
+                        <span class="experiment-count">4 Experiments</span>
+                    </div>
+                    <i class="fas fa-chevron-down unit-toggle" id="unit3-toggle"></i>
+                </div>
+                <div class="unit-content" id="unit3">
+                    <div class="experiment-list">
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 9 – Heat Treatment Simulator</h4>
+                                <p>Simulate annealing, hardening, tempering</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                            </div>
+                            <a href="#" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 10 – Surface Hardening Methods</h4>
+                                <p>Explore carburizing, nitriding methods</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                            </div>
+                            <a href="#" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 11 – Martensite Formation</h4>
+                                <p>Understand diffusionless transformation</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                            </div>
+                            <a href="#" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="experiment-item">
+                            <div class="exp-info">
+                                <h4>Experiment 12 – Austempering & Martempering</h4>
+                                <p>Learn specialized heat treatment</p>
+                                <span class="exp-time"><i class="far fa-clock"></i> 15-20 min</span>
+                            </div>
+                            <a href="#" class="btn btn-start">
+                                Start <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </section>
 
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 12</div>
-                <h4>CCT Diagram &amp; Cooling Curve Interpreter</h4>
-                <p>Continuous cooling transformation diagrams and final microstructure prediction</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
+    <!-- LEARNING OBJECTIVES (NOW AFTER EXPERIMENTS) -->
+    <section class="learning-objectives" id="objectives">
+        <div class="container">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="objectives-grid">
+                <div class="objective-card">
+                    <div class="objective-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <h3>Crystal Structures</h3>
+                </div>
+                
+                <div class="objective-card">
+                    <div class="objective-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Phase Diagrams</h3>
+                </div>
+                
+                <div class="objective-card">
+                    <div class="objective-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3>Heat Treatment</h3>
+                </div>
+                
+                <div class="objective-card">
+                    <div class="objective-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>Material Selection</h3>
+                </div>
+                
+                <div class="objective-card">
+                    <div class="objective-icon">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h3>Defects Analysis</h3>
+                </div>
             </div>
+        </div>
+    </section>
 
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 13</div>
-                <h4>Surface Hardening Methods Visualizer</h4>
-                <p>Explore carburizing, nitriding, cyaniding, flame and induction hardening processes</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
+    <!-- VIDEO LECTURES SECTION -->
+    <section class="video-lectures" id="videos">
+        <div class="container">
+            <h2 class="section-title">Video Lectures</h2>
+            <p class="section-subtitle">Watch lecture videos by Dr. A. Varun | Material Science & Metallurgy</p>
+
+            <div class="video-grid">
+
+                <!-- Video 1 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 1</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/ZiKY6iru4lw" title="Material Science – Lecture 1: Introduction to Crystal Lattice Structures" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 1: Introduction to Crystal Lattice Structures</h4>
+                        <p>Material Science – Lecture 1</p>
+                    </div>
+                </div>
+
+                <!-- Video 2 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 2</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/kdxqKFjmRxo" title="Material Science – Lecture 2: Crystal Structures (SC, BCC, FCC)" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 2: Crystal Structures (SC, BCC, FCC)</h4>
+                        <p>Material Science – Lecture 2</p>
+                    </div>
+                </div>
+
+                <!-- Video 3 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 3</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/DiYs7N_lV7k" title="Material Science – Lecture 3: Miller Indices | Crystallographic Planes & Directions" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 3: Miller Indices | Crystallographic Planes & Directions</h4>
+                        <p>Material Science – Lecture 3</p>
+                    </div>
+                </div>
+
+                <!-- Video 4 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 4</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/MbrUq4L1iTc" title="Material Science – Lecture 4: Mechanism of Crystallization | Nucleation and Crystal Growth" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 4: Mechanism of Crystallization | Nucleation and Crystal Growth</h4>
+                        <p>Material Science – Lecture 4</p>
+                    </div>
+                </div>
+
+                <!-- Video 5 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 5</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/w4G1tUZ2kJw" title="Material Science – Lecture 5: Crystal Defects | Point, Line, Surface, Volume Defects" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 5: Crystal Defects | Point, Line, Surface, Volume Defects</h4>
+                        <p>Material Science – Lecture 5</p>
+                    </div>
+                </div>
+
+                <!-- Video 6 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 6</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/3VZ96F4IJuI" title="Material Science – Lecture 6: Solid Solutions | Substitutional & Interstitial" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 6: Solid Solutions | Substitutional & Interstitial</h4>
+                        <p>Material Science – Lecture 6</p>
+                    </div>
+                </div>
+
+                <!-- Video 7 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 7</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/ttkqGgWEYYw" title="Material Science – Lecture 7: Phase Diagrams | Binary Phase Diagram Basics" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 7: Phase Diagrams | Binary Phase Diagram Basics</h4>
+                        <p>Material Science – Lecture 7</p>
+                    </div>
+                </div>
+
+                <!-- Video 8 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 8</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/d7mOpveuwXw" title="Material Science – Lecture 8: Binary Phase Diagram – I | Isomorphous Systems" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 8: Binary Phase Diagram – I | Isomorphous Systems</h4>
+                        <p>Material Science – Lecture 8</p>
+                    </div>
+                </div>
+
+                <!-- Video 9 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 9</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/_ij-iJ4hbk4" title="Material Science – Lecture 9: Binary Phase Diagram – II | Lever Rule & Tie Line Rule |" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 9: Binary Phase Diagram – II | Lever Rule & Tie Line Rule |</h4>
+                        <p>Material Science – Lecture 9</p>
+                    </div>
+                </div>
+
+                <!-- Video 10 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 10</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/lu_E1Ui8rU8" title="Material Science – Lecture 10: Binary Phase Diagram – III | Eutectic Phase Diagram" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 10: Binary Phase Diagram – III | Eutectic Phase Diagram</h4>
+                        <p>Material Science – Lecture 10</p>
+                    </div>
+                </div>
+
+                <!-- Video 11 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 11</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/2SgfBdbPrxs" title="Material Science – Lecture 11: Iron–Iron Carbide Phase Diagram – I | Introduction" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 11: Iron–Iron Carbide Phase Diagram – I | Introduction</h4>
+                        <p>Material Science – Lecture 11</p>
+                    </div>
+                </div>
+
+                <!-- Video 12 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 12</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/SkKvUfs4P6c" title="Material Science – Lecture 12: Iron–Iron Carbide Phase Diagram – II | Invariant Reactions" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 12: Iron–Iron Carbide Phase Diagram – II | Invariant Reactions</h4>
+                        <p>Material Science – Lecture 12</p>
+                    </div>
+                </div>
+
+                <!-- Video 13 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 13</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/Y3pBmfoRrtc" title="Material Science – Lecture 13: Carbon Solubility in Iron | Ferrite, Austenite & Cementite" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 13: Carbon Solubility in Iron | Ferrite, Austenite & Cementite</h4>
+                        <p>Material Science – Lecture 13</p>
+                    </div>
+                </div>
+
+                <!-- Video 14 -->
+                <div class="video-card">
+                    <div class="video-number">Lecture 14</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/IZmAeWj3Qig" title="Material Science – Lecture 14: TTT & CCT Diagrams | Heat Treatment of Steel" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4><i class="fas fa-play-circle"></i> Material Science – Lecture 14: TTT & CCT Diagrams | Heat Treatment of Steel</h4>
+                        <p>Material Science – Lecture 14</p>
+                    </div>
+                </div>
+
             </div>
-
-          </div>
         </div>
-      </div>
+    </section>
 
-      <!-- UNIT 4 -->
-      <div class="unit-card">
-        <div class="unit-header" onclick="toggleUnit('u4')">
-          <div class="unit-header-left">
-            <div class="unit-icon" style="background:#6d28d9"><i class="fas fa-industry"></i></div>
-            <div>
-              <h3>UNIT-IV: Alloys, Cast Irons &amp; Non-Ferrous Alloys</h3>
-              <p>Alloy steels, stainless steels, tool steels, cast irons, copper alloys (brass, bronze), aluminium alloys</p>
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>B. V. Raju Institute of Technology</h3>
+                    <p>Vishnupur, Narsapur</p>
+                    <p>Medak District – 502313</p>
+                    <p>Greater Hyderabad, Telangana, India</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-phone"></i> 08458-222000, 222001</p>
+                    <p><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c0a9aea6af80a2b6b2a9b4eea1a3eea9ae">[email&#160;protected]</a></p>
+                    <p style="margin-top: 10px;"><i class="fas fa-globe"></i> <a href="https://bvrit.ac.in/mech/" target="_blank" style="color: rgba(255,255,255,0.8); text-decoration: none;">Mechanical Engineering Dept.</a></p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Developed By</h3>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <img src="dr-varun-photo.png" alt="Dr. A. Varun" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--orange);">
+                        <div>
+                            <p style="font-size: 1.1rem; margin-bottom: 5px;"><strong>Dr. A. Varun</strong></p>
+                            <p style="font-size: 0.85rem;">Associate Professor &amp; Head</p>
+                        </div>
+                    </div>
+                    <p>Department of Mechanical Engineering</p>
+                    <p><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7e16111a50131b1d163e1c080c170a501f1d501710">[email&#160;protected]</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="96e0f7e4e3f8b8f7d6f4e0e4ffe2b8f7f5b8fff8">[email&#160;protected]</a></p>
+                    <p><i class="fas fa-phone"></i> +91 9494226711</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Student Contributor</h3>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <img src="hemanth-photo.png" alt="Hemanth Sagar Reddy" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #ffd700;">
+                        <div>
+                            <p style="font-size: 1.1rem; margin-bottom: 5px;"><strong>Hemanth Sagar Reddy</strong></p>
+                            <p style="font-size: 0.85rem;">Roll No: 25211A0329</p>
+                        </div>
+                    </div>
+                    <p>B.Tech Mechanical Engineering</p>
+                    <p style="margin-top: 8px; font-size: 0.9rem; color: #ffd700;">
+                        <i class="fas fa-code"></i> Developer of CRYSTAVIZ (Experiments 2 &amp; 3)
+                    </p>
+                </div>
             </div>
-          </div>
-          <div class="unit-header-right">
-            <span class="exp-count-badge">3 Experiments</span>
-            <i class="fas fa-chevron-down chevron" id="chev-u4"></i>
-          </div>
-        </div>
-        <div class="unit-body" id="u4">
-          <div class="exp-list">
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 14</div>
-                <h4>Alloy Steels Property Explorer</h4>
-                <p>Properties and applications of stainless steels, tool steels and maraging steels</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
-            </div>
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 15</div>
-                <h4>Cast Iron Microstructure Identifier</h4>
-                <p>Identify grey, white, malleable and spheroidal graphite cast irons from microstructure images</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
-            </div>
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 16</div>
-                <h4>Non-Ferrous Alloys Explorer</h4>
-                <p>Copper alloys (brass, bronze), aluminium alloys (Duralumin, Hindalium) — composition and properties</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <!-- UNIT 5 -->
-      <div class="unit-card">
-        <div class="unit-header" onclick="toggleUnit('u5')">
-          <div class="unit-header-left">
-            <div class="unit-icon" style="background:var(--teal)"><i class="fas fa-atom"></i></div>
-            <div>
-              <h3>UNIT-V: Ceramics, Composites, Polymers &amp; Advanced Materials</h3>
-              <p>Types, properties, applications; graphene, CNTs, smart materials, FGMs, biodegradable materials</p>
-            </div>
-          </div>
-          <div class="unit-header-right">
-            <span class="exp-count-badge">2 Experiments</span>
-            <i class="fas fa-chevron-down chevron" id="chev-u5"></i>
-          </div>
-        </div>
-        <div class="unit-body" id="u5">
-          <div class="exp-list">
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 17</div>
-                <h4>Ceramics &amp; Composites Explorer</h4>
-                <p>Types, properties and engineering applications of ceramics, polymers and composite materials</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
-            </div>
-
-            <div class="exp-item">
-              <div class="exp-left">
-                <div class="exp-num">Experiment 18</div>
-                <h4>Advanced Materials Visualizer</h4>
-                <p>Graphene, carbon nanotubes, phase-change materials, functionally graded materials and smart materials</p>
-                <div class="exp-tags"><span class="exp-tag tag-time"><i class="far fa-clock"></i> 15–20 min</span></div>
-              </div>
-              <a href="#" class="btn-start coming">Coming Soon</a>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ══ COURSE OBJECTIVES ════════════════════════════ -->
-  <section class="section objectives-section" id="objectives">
-    <div class="section-inner">
-      <div class="section-label">Course Objectives</div>
-      <h2 class="section-title">What You Will Learn</h2>
-      <p class="section-sub">Aligned to JNTUH R25 course outcomes for Material Science &amp; Metallurgy</p>
-
-      <div class="obj-grid">
-        <div class="obj-card">
-          <div class="obj-icon"><i class="fas fa-atom"></i></div>
-          <h3>Crystal Structures</h3>
-          <p>Understand metallic crystal structures, imperfections and strengthening mechanisms in relation to material behaviour.</p>
-        </div>
-        <div class="obj-card">
-          <div class="obj-icon"><i class="fas fa-project-diagram"></i></div>
-          <h3>Phase Diagrams</h3>
-          <p>Interpret binary phase diagrams and the Fe–Fe₃C diagram to explain microstructural transformations in alloys.</p>
-        </div>
-        <div class="obj-card">
-          <div class="obj-icon"><i class="fas fa-fire"></i></div>
-          <h3>Heat Treatment</h3>
-          <p>Apply different heat treatment processes and use TTT/CCT diagrams to predict microstructures and properties.</p>
-        </div>
-        <div class="obj-card">
-          <div class="obj-icon"><i class="fas fa-industry"></i></div>
-          <h3>Engineering Alloys</h3>
-          <p>Explain properties and applications of alloy steels, cast irons and non-ferrous alloys for engineering use.</p>
-        </div>
-        <div class="obj-card">
-          <div class="obj-icon"><i class="fas fa-microchip"></i></div>
-          <h3>Advanced Materials</h3>
-          <p>Apply knowledge of ceramics, composites, polymers and advanced materials for engineering material selection.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ HOW IT WORKS ═════════════════════════════════ -->
-  <section class="section instructions-section" id="instructions">
-    <div class="section-inner">
-      <div class="section-label">Instructions</div>
-      <h2 class="section-title">How to Use This Virtual Lab</h2>
-      <p class="section-sub">Follow these steps to get the most out of each experiment</p>
-
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-num">1</div>
-          <h4>Select an Experiment</h4>
-          <p>Click on any unit above to expand it and choose an experiment to begin.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">2</div>
-          <h4>Read the Theory</h4>
-          <p>Go through the theory tab to understand the concept, formulas and objectives before simulating.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">3</div>
-          <h4>Run the 3D Simulation</h4>
-          <p>Interact with the 3D model — rotate, zoom and change parameters to observe effects.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">4</div>
-          <h4>Take the Quiz</h4>
-          <p>Answer the MCQ quiz after each experiment. Get instant feedback and explanations.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">5</div>
-          <h4>Download Notes</h4>
-          <p>Download the PDF notes for each experiment to use during revision and exams.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">6</div>
-          <h4>Track Your Progress</h4>
-          <p>Your completed experiments and scores are saved automatically to your profile.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ PROGRESS ═════════════════════════════════════ -->
-  <section class="section progress-section" id="progress">
-    <div class="section-inner">
-      <div class="section-label">Student Progress</div>
-      <h2 class="section-title">Your Progress Dashboard</h2>
-      <p class="section-sub">Sign in to track your completed experiments and quiz scores</p>
-      <div class="progress-notice">
-        <i class="fas fa-lock"></i>
-        Progress tracking requires sign-in. Google Login integration coming soon.<br/>
-        <small style="margin-top:8px;display:block;">Your scores and completed experiments will appear here after login.</small>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ RESOURCES ════════════════════════════════════ -->
-  <section class="section resources-section" id="resources">
-    <div class="section-inner">
-      <div class="section-label">Resources</div>
-      <h2 class="section-title">Study Resources</h2>
-      <p class="section-sub">Supplementary materials to support your learning</p>
-
-      <div class="res-grid">
-        <a href="#" class="res-card">
-          <div class="res-icon"><i class="fas fa-file-pdf"></i></div>
-          <div>
-            <h4>Syllabus PDF</h4>
-            <p>R25 A72C1 — Material Science &amp; Metallurgy official syllabus</p>
-          </div>
-        </a>
-        <a href="https://bvrit.ac.in/mech/" target="_blank" class="res-card">
-          <div class="res-icon"><i class="fas fa-university"></i></div>
-          <div>
-            <h4>Dept. of Mechanical Engineering</h4>
-            <p>BVRIT Narsapur — official department page</p>
-          </div>
-        </a>
-        <a href="https://bvrit.ac.in/mech/about-hod/" target="_blank" class="res-card">
-          <div class="res-icon"><i class="fas fa-user-tie"></i></div>
-          <div>
-            <h4>Faculty Profile – Dr. A. Varun</h4>
-            <p>Publications, patents and academic profile</p>
-          </div>
-        </a>
-        <a href="#videos" class="res-card">
-          <div class="res-icon"><i class="fab fa-youtube"></i></div>
-          <div>
-            <h4>Video Lectures</h4>
-            <p>14 recorded lectures by Dr. A. Varun</p>
-          </div>
-        </a>
-        <a href="leaderboard.html" class="res-card">
-          <div class="res-icon"><i class="fas fa-trophy"></i></div>
-          <div>
-            <h4>Quiz Leaderboard</h4>
-            <p>Top scorers across all experiments</p>
-          </div>
-        </a>
-        <a href="#" class="res-card">
-          <div class="res-icon"><i class="fas fa-book"></i></div>
-          <div>
-            <h4>Reference Textbooks</h4>
-            <p>Callister, Raghavan — suggested readings</p>
-          </div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ VIDEO LECTURES ═══════════════════════════════ -->
-  <section class="section videos-section" id="videos">
-    <div class="section-inner">
-      <div class="section-label">Video Lectures</div>
-      <h2 class="section-title">Watch &amp; Learn</h2>
-      <p class="section-sub">Recorded lectures by Dr. A. Varun — Material Science &amp; Metallurgy, BVRIT</p>
-
-      <div class="video-grid">
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 1</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/ZiKY6iru4lw" title="Lecture 1: Introduction to Crystal Lattice Structures"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Introduction to Crystal Lattice Structures</h4>
-            <p>Material Science – Lecture 1</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 2</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/kdxqKFjmRxo" title="Lecture 2: Crystal Structures (SC, BCC, FCC)"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Crystal Structures (SC, BCC, FCC)</h4>
-            <p>Material Science – Lecture 2</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 3</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/DiYs7N_lV7k" title="Lecture 3: Miller Indices"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Miller Indices | Crystallographic Planes &amp; Directions</h4>
-            <p>Material Science – Lecture 3</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 4</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/MbrUq4L1iTc" title="Lecture 4: Nucleation and Crystal Growth"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Mechanism of Crystallization | Nucleation and Crystal Growth</h4>
-            <p>Material Science – Lecture 4</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 5</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/w4G1tUZ2kJw" title="Lecture 5: Crystal Defects"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Crystal Defects | Point, Line, Surface, Volume Defects</h4>
-            <p>Material Science – Lecture 5</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 6</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/3VZ96F4IJuI" title="Lecture 6: Solid Solutions"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Solid Solutions | Substitutional &amp; Interstitial</h4>
-            <p>Material Science – Lecture 6</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 7</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/ttkqGgWEYYw" title="Lecture 7: Phase Diagrams Basics"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Phase Diagrams | Binary Phase Diagram Basics</h4>
-            <p>Material Science – Lecture 7</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 8</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/d7mOpveuwXw" title="Lecture 8: Isomorphous Systems"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Binary Phase Diagram – I | Isomorphous Systems</h4>
-            <p>Material Science – Lecture 8</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 9</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/_ij-iJ4hbk4" title="Lecture 9: Lever Rule & Tie Line"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Binary Phase Diagram – II | Lever Rule &amp; Tie Line</h4>
-            <p>Material Science – Lecture 9</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 10</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/lu_E1Ui8rU8" title="Lecture 10: Eutectic Phase Diagram"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Binary Phase Diagram – III | Eutectic Phase Diagram</h4>
-            <p>Material Science – Lecture 10</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 11</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/2SgfBdbPrxs" title="Lecture 11: Iron-Iron Carbide Phase Diagram I"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Iron–Iron Carbide Phase Diagram – I | Introduction</h4>
-            <p>Material Science – Lecture 11</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 12</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/SkKvUfs4P6c" title="Lecture 12: Iron-Iron Carbide Phase Diagram II"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Iron–Iron Carbide Phase Diagram – II | Invariant Reactions</h4>
-            <p>Material Science – Lecture 12</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 13</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/Y3pBmfoRrtc" title="Lecture 13: Ferrite Austenite Cementite"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> Carbon Solubility in Iron | Ferrite, Austenite &amp; Cementite</h4>
-            <p>Material Science – Lecture 13</p>
-          </div>
-        </div>
-
-        <div class="video-card">
-          <div class="video-num-bar">Lecture 14</div>
-          <div class="video-embed">
-            <iframe src="https://www.youtube.com/embed/IZmAeWj3Qig" title="Lecture 14: TTT & CCT Diagrams"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-          <div class="video-info">
-            <h4><i class="fas fa-play-circle" style="color:var(--orange)"></i> TTT &amp; CCT Diagrams | Heat Treatment of Steel</h4>
-            <p>Material Science – Lecture 14</p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ FOOTER ═══════════════════════════════════════ -->
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-grid">
-
-        <!-- College info -->
-        <div class="footer-col">
-          <h3>Institution</h3>
-          <img src="https://bvrit.ac.in/wp-content/uploads/2023/04/BVRIT-engineering-technology-college-logo-narsapur.webp"
-               alt="BVRIT Logo"
-               style="height:44px;width:auto;margin-bottom:14px;filter:brightness(0) invert(1);opacity:0.85;"
-               onerror="this.style.display='none'"/>
-          <p>B. V. Raju Institute of Technology</p>
-          <p>Vishnupur, Narsapur</p>
-          <p>Medak District – 502313</p>
-          <p>Greater Hyderabad, Telangana, India</p>
-        </div>
-
-        <!-- Contact -->
-        <div class="footer-col">
-          <h3>Contact</h3>
-          <a href="tel:08458222000"><i class="fas fa-phone"></i> 08458-222000, 222001</a>
-          <a href="mailto:info@bvrit.ac.in"><i class="fas fa-envelope"></i> info@bvrit.ac.in</a>
-          <a href="https://bvrit.ac.in/mech/" target="_blank"><i class="fas fa-globe"></i> Mechanical Engineering Dept.</a>
-          <a href="https://bvrit.ac.in" target="_blank"><i class="fas fa-university"></i> bvrit.ac.in</a>
-        </div>
-
-        <!-- Faculty -->
-        <div class="footer-col">
-          <h3>Course Faculty</h3>
-          <div class="person-card">
-            <img src="https://bvrit.ac.in/wp-content/uploads/2023/05/varun-faculty-bvrit-engineering-college-narsapur.webp"
-                 alt="Dr. A. Varun"
-                 onerror="this.src='https://ui-avatars.com/api/?name=A+Varun&size=64&background=e05c1a&color=fff'"/>
-            <div>
-              <span class="person-name">Dr. A. Varun</span>
-              <span class="person-role">
-                Associate Professor &amp; HoD<br/>
-                Dept. of Mechanical Engineering<br/>
-                BVRIT Employee ID: 607<br/>
-                Ph.D. – NIT Warangal, 2015
-              </span>
-              <span class="person-tag">Course Instructor</span>
-            </div>
-          </div>
-          <a href="mailto:varun.a@bvrit.ac.in" style="font-size:12.5px;"><i class="fas fa-envelope"></i> varun.a@bvrit.ac.in</a>
-          <a href="mailto:hod.mech@bvrit.ac.in" style="font-size:12.5px;"><i class="fas fa-envelope"></i> hod.mech@bvrit.ac.in</a>
-          <a href="tel:+919494226711" style="font-size:12.5px;"><i class="fas fa-phone"></i> +91 94942 26711</a>
-          <a href="https://bvrit.ac.in/mech/about-hod/" target="_blank" style="font-size:12.5px;margin-top:6px;">
-            <i class="fas fa-external-link-alt"></i> View Full Profile
-          </a>
-        </div>
-
-        <!-- Student contributor -->
-        <div class="footer-col">
-          <h3>Student Contributor</h3>
-          <div class="person-card">
-            <img src="hemanth-photo.png"
-                 alt="Hemanth Sagar Reddy"
-                 onerror="this.src='https://ui-avatars.com/api/?name=Hemanth+Sagar&size=64&background=1a2744&color=fff'"/>
-            <div>
-              <span class="person-name">Hemanth Sagar Reddy</span>
-              <span class="person-role">
-                Roll No: 25211A0329<br/>
-                B.Tech Mechanical Engineering<br/>
-                I Year, BVRIT Narsapur
-              </span>
-              <span class="person-tag">Developer – CRYSTAVIZ (Exp 2 &amp; 3)</span>
-            </div>
-          </div>
-          <p style="font-size:12.5px;margin-top:6px;color:rgba(255,255,255,0.5);">
-            <i class="fas fa-code" style="color:var(--orange2)"></i>
-            Developed the 3D Crystal Structure Visualizer and Crystal Defects Visualizer experiments.
-          </p>
-        </div>
-
-      </div>
-
-      <hr class="footer-divider"/>
-      <div class="footer-bottom">
-        <span>&copy; 2026 B. V. Raju Institute of Technology. All rights reserved.</span>
-        <span>
-          Virtual Lab developed by
-          <a href="https://bvrit.ac.in/mech/about-hod/" target="_blank">Dr. A. Varun</a>
-          &amp; Hemanth Sagar Reddy &nbsp;·&nbsp;
-          Built with Three.js &amp; hosted on
-          <a href="https://pages.github.com" target="_blank">GitHub Pages</a>
-        </span>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    function toggleUnit(id) {
-      const body  = document.getElementById(id);
-      const chev  = document.getElementById('chev-' + id);
-      const isOpen = body.classList.contains('open');
-      body.classList.toggle('open', !isOpen);
-      chev.classList.toggle('open', !isOpen);
-    }
-
-    // Sticky header shadow on scroll
-    window.addEventListener('scroll', () => {
-      document.getElementById('header').style.boxShadow =
-        window.scrollY > 10 ? '0 2px 16px rgba(26,39,68,0.12)' : '0 1px 8px rgba(26,39,68,0.06)';
-    });
-
-    // Smooth active nav link highlight
-    const sections = document.querySelectorAll('section[id], div[id]');
-    const navLinks  = document.querySelectorAll('.nav-links a');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(s => {
-        if (window.scrollY >= s.offsetTop - 80) current = s.id;
-      });
-      navLinks.forEach(a => {
-        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-      });
-    });
-  </script>
-</body>
-</html>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 B. V. Raju Institute of Technology. All rights reserved.</p>
+                <p style="margin-top: 5px; font-size: 0.85rem;">Developed 

@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiment 1 - BRAVLAT | BVRIT Virtual Lab</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #020203;
+            --panel-bg: rgba(10, 12, 20, 0.88);
+            --accent: #00c9a7;
+            --accent-glow: #7fffd4;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            margin: 0; overflow: hidden;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            background: radial-gradient(circle at 30% 60%, #003d2e 0%, #001a2c 40%, #000000 90%);
+        }
+
+        header {
+            height: 64px;
+            background: rgba(0,0,0,0.55);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 28px;
+            z-index: 20;
+            backdrop-filter: blur(14px);
+            position: relative;
+        }
+
+        .logo {
+            font-size: 1.45rem; font-weight: 800; letter-spacing: 2px; color: #fff;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-icon { font-size: 1.7rem; color: var(--accent); filter: drop-shadow(0 0 10px var(--accent)); }
+        .logo-img { height: 48px; width: auto; }
+
+        .header-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+        .sys-tabs { display: flex; gap: 4px; }
+        .sys-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 0.7rem;
+            transition: all 0.25s ease;
+            border-radius: 4px;
+        }
+        .sys-btn:hover { color: #fff; border-color: var(--accent); background: rgba(0,201,167,0.12); }
+        .sys-btn.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            box-shadow: 0 0 16px rgba(0,201,167,0.4);
+        }
+
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 7px 16px;
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+        .back-btn:hover {
+            background: var(--accent);
+            color: #000;
+            transform: translateX(-4px);
+            box-shadow: 0 0 16px rgba(0,201,167,0.4);
+        }
+
+        #main-area { display: flex; height: calc(100vh - 64px); position: relative; }
+        #canvas-container { flex-grow: 1; position: relative; overflow: hidden; }
+
+        #info-panel {
+            position: absolute; top: 24px; left: 24px; width: 268px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            border-radius: 0 10px 10px 0;
+            backdrop-filter: blur(18px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.55);
+            z-index: 10;
+        }
+        .panel-label {
+            font-size: 0.67rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--accent); margin-bottom: 4px; font-weight: 700;
+        }
+        #info-panel h2 { margin: 0 0 4px 0; color: #fff; font-size: 1.05rem; }
+        #info-system { font-size: 0.76rem; color: var(--accent-glow); font-weight: 600; margin-bottom: 8px; }
+        #info-desc { font-size: 0.83rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.55; }
+
+        .stat-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.82rem; margin-bottom: 8px; padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { cursor: help; border-bottom: 1px dotted #555; transition: color 0.2s; }
+        .stat-label:hover { color: var(--accent); }
+        .stat-val { color: var(--accent-glow); font-weight: bold; font-family: monospace; font-size: 0.92rem; }
+
+        .tooltip {
+            visibility: hidden; width: 210px; background: #0a0f1a; color: #fff;
+            text-align: left; border-radius: 6px; padding: 10px 12px;
+            position: absolute; z-index: 200; bottom: 120%; left: 0;
+            opacity: 0; transition: opacity 0.3s; font-size: 0.77rem; font-weight: normal;
+            border: 1px solid var(--accent); box-shadow: 0 0 14px rgba(0,201,167,0.25);
+            pointer-events: none; line-height: 1.5;
+        }
+        .stat-label:hover .tooltip { visibility: visible; opacity: 1; }
+
+        #params-box {
+            margin-top: 14px;
+            background: rgba(0,201,167,0.06);
+            border: 1px solid rgba(0,201,167,0.18);
+            border-radius: 8px;
+            padding: 11px 13px;
+        }
+        #params-box h4 { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 7px; }
+        .param-row { display: flex; justify-content: space-between; font-size: 0.79rem; margin-bottom: 4px; }
+        .param-key { color: var(--text-muted); }
+        .param-val { color: #fff; font-family: monospace; }
+
+        #controls {
+            width: 295px;
+            background: var(--panel-bg);
+            border-left: 1px solid var(--border);
+            padding: 24px 20px;
+            display: flex; flex-direction: column; gap: 20px;
+            backdrop-filter: blur(18px);
+            box-shadow: -10px 0 40px rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+
+        .ctrl-group h3 {
+            font-size: 0.69rem; text-transform: uppercase; color: var(--text-muted);
+            letter-spacing: 1.5px; margin-bottom: 11px;
+            border-bottom: 1px solid var(--border); padding-bottom: 7px;
+        }
+        .ctrl-row {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px; font-size: 0.87rem;
+        }
+        .ctrl-row span { color: var(--text-muted); }
+
+        input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+        input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; height: 4px; }
+        input[type=color] { border: 1px solid #555; width: 32px; height: 32px; background: none; cursor: pointer; border-radius: 6px; }
+
+        .btn-action {
+            width: 100%; padding: 11px; background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border); color: #fff; cursor: pointer;
+            text-transform: uppercase; font-weight: bold; font-size: 0.78rem;
+            transition: 0.3s; border-radius: 6px; letter-spacing: 1px;
+            margin-bottom: 7px;
+        }
+        .btn-action:hover { background: var(--accent); border-color: var(--accent); color: #000; box-shadow: 0 0 16px rgba(0,201,167,0.35); }
+
+        .lattice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .lat-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 5px;
+            cursor: pointer;
+            font-size: 0.69rem;
+            font-weight: 600;
+            transition: all 0.22s;
+            border-radius: 6px;
+            text-align: center;
+            line-height: 1.3;
+        }
+        .lat-btn:hover { color: #fff; border-color: var(--accent); background: rgba(0,201,167,0.1); }
+        .lat-btn.active { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 10px rgba(0,201,167,0.35); }
+
+        .credits-badge {
+            position: absolute; bottom: 24px; left: 24px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid #ffd700;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 12px;
+            max-width: 265px; z-index: 10;
+        }
+        .credits-photo { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #ffd700; object-fit: cover; }
+        .credits-info .name { font-weight: 700; color: #ffd700; font-size: 0.86rem; margin-bottom: 2px; }
+        .credits-info .detail { font-size: 0.71rem; color: var(--text-muted); line-height: 1.4; }
+
+        #system-badge {
+            position: absolute; top: 24px; right: 310px;
+            background: var(--panel-bg);
+            border: 1px solid rgba(0,201,167,0.28);
+            border-radius: 8px;
+            padding: 9px 16px;
+            font-size: 0.75rem;
+            color: var(--accent-glow);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            text-align: center;
+        }
+        #system-badge .sys-name { font-size: 0.95rem; font-weight: 700; color: #fff; margin-top: 2px; }
+
+        @media (max-width: 1100px) {
+            #controls { width: 255px; }
+            #system-badge { right: 265px; }
+        }
+        @media (max-width: 768px) {
+            .sys-tabs { display: none; }
+            #controls { position: absolute; right: -100%; width: 260px; height: calc(100vh - 64px); transition: right 0.3s; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="display:flex; align-items:center; gap:16px;">
+        <img src="../bvrit-logo.png" alt="BVRIT" class="logo-img">
+        <div class="logo">
+            <span class="logo-icon">🔷</span>
+            BRAVLAT
+        </div>
+    </div>
+    <div class="header-right">
+        <div class="sys-tabs">
+            <button class="sys-btn active"    onclick="app.setSystem('cubic')">Cubic</button>
+            <button class="sys-btn"           onclick="app.setSystem('tetragonal')">Tetragonal</button>
+            <button class="sys-btn"           onclick="app.setSystem('orthorhombic')">Orthorhombic</button>
+            <button class="sys-btn"           onclick="app.setSystem('hexagonal')">Hexagonal</button>
+            <button class="sys-btn"           onclick="app.setSystem('trigonal')">Trigonal</button>
+            <button class="sys-btn"           onclick="app.setSystem('monoclinic')">Monoclinic</button>
+            <button class="sys-btn"           onclick="app.setSystem('triclinic')">Triclinic</button>
+        </div>
+        <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Lab</a>
+    </div>
+</header>
+
+<div id="main-area">
+    <div id="canvas-container">
+
+        <div id="info-panel">
+            <div class="panel-label">Bravais Lattice</div>
+            <h2 id="info-title">Simple Cubic (P)</h2>
+            <div id="info-system">Crystal System: Cubic</div>
+            <p id="info-desc">All three axes equal, all angles 90°. Atoms at corners only.</p>
+
+            <div class="stat-row">
+                <span class="stat-label">Lattice Points / Cell
+                    <span class="tooltip">Total effective lattice points per unit cell after accounting for sharing.</span>
+                </span>
+                <span class="stat-val" id="info-points">1</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Coordination No.
+                    <span class="tooltip">Number of nearest neighbouring lattice points surrounding any point.</span>
+                </span>
+                <span class="stat-val" id="info-coord">6</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Bravais Symbol
+                    <span class="tooltip">P = Primitive · I = Body-centred · F = Face-centred · C = Base-centred · R = Rhombohedral</span>
+                </span>
+                <span class="stat-val" id="info-symbol">P</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Real Example
+                    <span class="tooltip">Known material or mineral with this lattice type.</span>
+                </span>
+                <span class="stat-val" id="info-example" style="font-size:0.78rem;">Po</span>
+            </div>
+
+            <div id="params-box">
+                <h4>Lattice Parameters</h4>
+                <div class="param-row"><span class="param-key">Axes</span><span class="param-val" id="p-axes">a = b = c</span></div>
+                <div class="param-row"><span class="param-key">Angles</span><span class="param-val" id="p-angles">α = β = γ = 90°</span></div>
+            </div>
+        </div>
+
+        <div id="system-badge">
+            Crystal System
+            <div class="sys-name" id="badge-system">Cubic</div>
+        </div>
+
+        <div class="credits-badge">
+            <img src="../dr-varun-photo.png" alt="Dr. A. Varun" class="credits-photo">
+            <div class="credits-info">
+                <div class="name">Dr. A. Varun</div>
+                <div class="detail">Associate Professor & Head<br>Dept. of Mechanical Engg., BVRIT</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="controls">
+        <div class="ctrl-group">
+            <h3>Select Lattice Type</h3>
+            <div class="lattice-grid" id="latticeGrid"></div>
+        </div>
+
+        <div class="ctrl-group">
+            <h3>Visual Options</h3>
+            <div class="ctrl-row">
+                <span>Show Axes (a, b, c)</span>
+                <input type="checkbox" id="chk-axes" checked onchange="app.rebuild()">
+            </div>
+            <div class="ctrl-row">
+                <span>Show Wireframe</span>
+                <input type="checkbox" id="chk-wire" checked onchange="app.rebuild()">
+            </div>
+            <div class="ctrl-row">
+                <span>Auto Rotate</span>
+                <input type="checkbox" id="chk-rot" checked onchange="app.toggleRot()">
+            </div>
+        </div>
+
+        <div class="ctrl-group">
+            <h3>Appearance</h3>
+            <div class="ctrl-row">
+                <span>Corner Atom Color</span>
+                <input type="color" id="col-corner" value="#00c9a7" oninput="app.rebuild()">
+            </div>
+            <div class="ctrl-row">
+                <span>Extra Point Color</span>
+                <input type="color" id="col-extra" value="#ff6b6b" oninput="app.rebuild()">
+            </div>
+            <div class="ctrl-row" style="flex-direction:column; align-items:flex-start; gap:6px;">
+                <span style="font-size:0.79rem; color:#aaa;">Atom Size</span>
+                <input type="range" id="rng-rad" min="0.3" max="1.0" step="0.01" value="0.55" oninput="app.rebuild()">
+            </div>
+        </div>
+
+        <div class="ctrl-group">
+            <h3>Navigation</h3>
+            <button class="btn-action" onclick="app.resetView()">⟳ &nbsp;Reset View</button>
+            <button class="btn-action" onclick="app.prevLattice()">← &nbsp;Previous Lattice</button>
+            <button class="btn-action" onclick="app.nextLattice()">Next Lattice &nbsp;→</button>
+        </div>
+
+        <div class="ctrl-group">
+            <h3>About BRAVLAT</h3>
+            <p style="font-size:0.77rem; color:var(--text-muted); line-height:1.6;">
+                <strong style="color:#fff;">14 Bravais Lattices</strong> span across
+                <strong style="color:#fff;">7 Crystal Systems</strong>. Each describes a unique
+                periodic arrangement of atoms in 3D space. Use the tabs or buttons to explore all 14.
+                Hover over labels in the info panel for definitions.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+// ======================================================================
+//  BRAVLAT — Bravais Lattice Explorer
+//  Experiment 1 | BVRIT Virtual Lab — Material Science & Metallurgy
+// ======================================================================
+
+const LATTICES = {
+    cubic: [
+        { id:'cP', name:'Simple Cubic', short:'SC (P)',
+          system:'Cubic', symbol:'P', points:'1', coord:'6',
+          example:'Polonium (Po)',
+          axes:'a = b = c', angles:'α = β = γ = 90°',
+          desc:'Atoms at the 8 corners of a cube. All axes equal, all angles 90°. Lowest packing efficiency.',
+          build: (a,b,c) => ({ corners: corners8(a,b,c), extra:[] }) },
+
+        { id:'cI', name:'Body-Centred Cubic', short:'BCC (I)',
+          system:'Cubic', symbol:'I', points:'2', coord:'8',
+          example:'α-Iron (Fe), W, Cr, Mo',
+          axes:'a = b = c', angles:'α = β = γ = 90°',
+          desc:'Corner atoms + 1 atom at body centre. 2 effective lattice points per cell.',
+          build: (a,b,c) => ({ corners: corners8(a,b,c), extra:[[0,0,0]] }) },
+
+        { id:'cF', name:'Face-Centred Cubic', short:'FCC (F)',
+          system:'Cubic', symbol:'F', points:'4', coord:'12',
+          example:'Al, Cu, Au, Ag, Ni',
+          axes:'a = b = c', angles:'α = β = γ = 90°',
+          desc:'Corners + atoms at all 6 face centres. 4 lattice points per cell. Highest cubic packing.',
+          build: (a,b,c) => ({ corners: corners8(a,b,c), extra: faceCtrs(a,b,c) }) },
+    ],
+    tetragonal: [
+        { id:'tP', name:'Simple Tetragonal', short:'ST (P)',
+          system:'Tetragonal', symbol:'P', points:'1', coord:'4',
+          example:'Indium (In), β-Sn',
+          axes:'a = b ≠ c', angles:'α = β = γ = 90°',
+          desc:'Like simple cubic but stretched along c-axis (c ≠ a). All angles still 90°.',
+          build: (a,b,c) => ({ corners: corners8(a,b,c*1.7), extra:[] }) },
+
+        { id:'tI', name:'Body-Centred Tetragonal', short:'BCT (I)',
+          system:'Tetragonal', symbol:'I', points:'2', coord:'4',
+          example:'Indium, white tin (β-Sn)',
+          axes:'a = b ≠ c', angles:'α = β = γ = 90°',
+          desc:'Tetragonal prism with additional atom at body centre. 2 lattice points per cell.',
+          build: (a,b,c) => ({ corners: corners8(a,b,c*1.7), extra:[[0,0,0]] }) },
+    ],
+    orthorhombic: [
+        { id:'oP', name:'Simple Orthorhombic', short:'S-Ortho (P)',
+          system:'Orthorhombic', symbol:'P', points:'1', coord:'2',
+          example:'Sulfur (α-S), Ga',
+          axes:'a ≠ b ≠ c', angles:'α = β = γ = 90°',
+          desc:'All three axes different, all angles 90°. The most general rectangular box.',
+          build: (a,b,c) => ({ corners: corners8(a*1.4,b,c*1.7), extra:[] }) },
+
+        { id:'oC', name:'Base-Centred Orthorhombic', short:'BC-Ortho (C)',
+          system:'Orthorhombic', symbol:'C', points:'2', coord:'2',
+          example:'Chlorine (Cl), KNO₃',
+          axes:'a ≠ b ≠ c', angles:'α = β = γ = 90°',
+          desc:'Orthorhombic + extra atoms at top and bottom face (C-face) centres.',
+          build: (a,b,c) => {
+            const A=a*1.4, C=c*1.7;
+            return { corners: corners8(A,b,C),
+              extra:[[0,b/2,C/2],[0,-b/2,C/2],[0,b/2,-C/2],[0,-b/2,-C/2]] }; } },
+
+        { id:'oI', name:'Body-Centred Orthorhombic', short:'BI-Ortho (I)',
+          system:'Orthorhombic', symbol:'I', points:'2', coord:'2',
+          example:'α-Uranium (U)',
+          axes:'a ≠ b ≠ c', angles:'α = β = γ = 90°',
+          desc:'Orthorhombic prism with extra atom at body centre.',
+          build: (a,b,c) => ({ corners: corners8(a*1.4,b,c*1.7), extra:[[0,0,0]] }) },
+
+        { id:'oF', name:'Face-Centred Orthorhombic', short:'FC-Ortho (F)',
+          system:'Orthorhombic', symbol:'F', points:'4', coord:'2',
+          example:'Olivine (Mg₂SiO₄)',
+          axes:'a ≠ b ≠ c', angles:'α = β = γ = 90°',
+          desc:'Orthorhombic with atoms at all 6 face centres. 4 lattice points per cell.',
+          build: (a,b,c) => {
+            const A=a*1.4, C=c*1.7;
+            return { corners: corners8(A,b,C), extra: faceCtrs(A,b,C) }; } },
+    ],
+    hexagonal: [
+        { id:'hP', name:'Simple Hexagonal', short:'Hexagonal (P)',
+          system:'Hexagonal', symbol:'P', points:'1', coord:'8',
+          example:'Mg, Zn, Ti, Co (HCP)',
+          axes:'a = b ≠ c', angles:'α = β = 90°, γ = 120°',
+          desc:'Hexagonal prism. Lattice points at prism corners and face centres. γ = 120° between a-axes.',
+          build: buildHex },
+    ],
+    trigonal: [
+        { id:'rP', name:'Rhombohedral', short:'Rhombo (R)',
+          system:'Trigonal', symbol:'R', points:'1', coord:'6',
+          example:'Calcite (CaCO₃), Bi, Sb',
+          axes:'a = b = c', angles:'α = β = γ ≠ 90°',
+          desc:'A cube compressed or stretched along a body diagonal. All axes equal, all angles equal but ≠ 90°.',
+          build: buildRhombo },
+    ],
+    monoclinic: [
+        { id:'mP', name:'Simple Monoclinic', short:'S-Mono (P)',
+          system:'Monoclinic', symbol:'P', points:'1', coord:'2',
+          example:'Gypsum (CaSO₄·2H₂O)',
+          axes:'a ≠ b ≠ c', angles:'α = γ = 90°, β ≠ 90°',
+          desc:'Three unequal axes; one angle (β) is oblique. Atoms at corners only.',
+          build: buildMonoP },
+
+        { id:'mC', name:'Base-Centred Monoclinic', short:'BC-Mono (C)',
+          system:'Monoclinic', symbol:'C', points:'2', coord:'2',
+          example:'Orthoclase feldspar, Na₂SO₄',
+          axes:'a ≠ b ≠ c', angles:'α = γ = 90°, β ≠ 90°',
+          desc:'Monoclinic with extra atoms at the C-face (top and bottom face) centres.',
+          build: buildMonoC },
+    ],
+    triclinic: [
+        { id:'aP', name:'Simple Triclinic', short:'Triclinic (P)',
+          system:'Triclinic', symbol:'P', points:'1', coord:'2',
+          example:'CuSO₄·5H₂O, Plagioclase',
+          axes:'a ≠ b ≠ c', angles:'α ≠ β ≠ γ ≠ 90°',
+          desc:'Most general lattice. All three axes unequal, all three angles different and none equal to 90°.',
+          build: buildTriclinic },
+    ],
+};
+
+// ---- Geometry helpers ----
+function corners8(a, b, c) {
+    return [
+        [ a/2, b/2, c/2],[-a/2, b/2, c/2],
+        [ a/2,-b/2, c/2],[-a/2,-b/2, c/2],
+        [ a/2, b/2,-c/2],[-a/2, b/2,-c/2],
+        [ a/2,-b/2,-c/2],[-a/2,-b/2,-c/2]
+    ];
+}
+function faceCtrs(a, b, c) {
+    return [
+        [a/2,b/2,0],[-a/2,b/2,0],[a/2,-b/2,0],[-a/2,-b/2,0],
+        [a/2,0,c/2],[-a/2,0,c/2],[a/2,0,-c/2],[-a/2,0,-c/2],
+        [0,b/2,c/2],[0,-b/2,c/2],[0,b/2,-c/2],[0,-b/2,-c/2]
+    ];
+}
+function buildHex() {
+    const R=5, H=9, corners=[];
+    for(let i=0;i<6;i++){
+        const a=(Math.PI/3)*i;
+        corners.push([R*Math.cos(a), H/2, R*Math.sin(a)]);
+        corners.push([R*Math.cos(a),-H/2, R*Math.sin(a)]);
+    }
+    return { corners, extra:[] };
+}
+function buildRhombo() {
+    const s=3.5, sh=1.3;
+    const raw=[[ s, s, s],[ s, s,-s],[ s,-s, s],[ s,-s,-s],
+               [-s, s, s],[-s, s,-s],[-s,-s, s],[-s,-s,-s]];
+    return { corners: raw.map(([x,y,z])=>[x+sh*z*0.3, y+sh*z*0.15, z]), extra:[] };
+}
+function buildMonoP() {
+    const A=5,B=4,C=7,sh=2.2;
+    return { corners:[
+        [ A/2+sh, B/2, C/2],[-A/2+sh, B/2, C/2],
+        [ A/2+sh,-B/2, C/2],[-A/2+sh,-B/2, C/2],
+        [ A/2,    B/2,-C/2],[-A/2,    B/2,-C/2],
+        [ A/2,   -B/2,-C/2],[-A/2,   -B/2,-C/2]], extra:[] };
+}
+function buildMonoC() {
+    const A=5,B=4,C=7,sh=2.2;
+    const corners=[
+        [ A/2+sh, B/2, C/2],[-A/2+sh, B/2, C/2],
+        [ A/2+sh,-B/2, C/2],[-A/2+sh,-B/2, C/2],
+        [ A/2,    B/2,-C/2],[-A/2,    B/2,-C/2],
+        [ A/2,   -B/2,-C/2],[-A/2,   -B/2,-C/2]];
+    return { corners, extra:[[sh/2, B/2, 0],[sh/2,-B/2, 0]] };
+}
+function buildTriclinic() {
+    const A=5,B=4,C=7,sx=1.6,sy=1.0;
+    return { corners:[
+        [ A/2+sx+sy, B/2, C/2],[-A/2+sx+sy, B/2, C/2],
+        [ A/2+sx,   -B/2, C/2],[-A/2+sx,   -B/2, C/2],
+        [ A/2+sy,    B/2,-C/2],[-A/2+sy,    B/2,-C/2],
+        [ A/2,      -B/2,-C/2],[-A/2,      -B/2,-C/2]], extra:[] };
+}
+
+const ALL = Object.values(LATTICES).flat();
+
+// ======================================================================
+//  THREE.JS SCENE
+// ======================================================================
+class BravlatSim {
+    constructor() {
+        this.el = document.getElementById('canvas-container');
+        this.curLat = null;
+        this.curIdx = 0;
+        this.objects = [];
+        this.axGrp = null;
+        this.initThree();
+        this.buildGrid('cubic');
+        this.load(LATTICES.cubic[0]);
+        this.animate();
+    }
+
+    initThree() {
+        this.scene = new THREE.Scene();
+        this.cam = new THREE.PerspectiveCamera(38, this.el.offsetWidth/this.el.offsetHeight, 0.1, 1000);
+        this.cam.position.set(10, 8, 22);
+        this.renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+        this.renderer.setSize(this.el.offsetWidth, this.el.offsetHeight);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.el.appendChild(this.renderer.domElement);
+        this.oc = new THREE.OrbitControls(this.cam, this.renderer.domElement);
+        this.oc.enableDamping = true;
+        this.oc.autoRotate = true;
+        this.oc.autoRotateSpeed = 1.8;
+        this.scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+        const d1 = new THREE.DirectionalLight(0xffffff, 0.9); d1.position.set(10,15,20); this.scene.add(d1);
+        const d2 = new THREE.DirectionalLight(0x00c9a7, 0.3); d2.position.set(-10,-5,-10); this.scene.add(d2);
+        window.addEventListener('resize', () => {
+            this.cam.aspect = this.el.offsetWidth/this.el.offsetHeight;
+            this.cam.updateProjectionMatrix();
+            this.renderer.setSize(this.el.offsetWidth, this.el.offsetHeight);
+        });
+    }
+
+    buildGrid(sys) {
+        const g = document.getElementById('latticeGrid'); g.innerHTML='';
+        (LATTICES[sys]||[]).forEach((lat,i) => {
+            const b = document.createElement('button');
+            b.className = 'lat-btn' + (i===0?' active':'');
+            b.innerHTML = lat.short;
+            b.onclick = () => this.load(lat);
+            g.appendChild(b);
+        });
+    }
+
+    setSystem(sys) {
+        document.querySelectorAll('.sys-btn').forEach(b =>
+            b.classList.toggle('active', b.getAttribute('onclick').includes(`'${sys}'`)));
+        this.buildGrid(sys);
+        this.load(LATTICES[sys][0]);
+    }
+
+    load(lat) {
+        this.curLat = lat;
+        this.curIdx = ALL.indexOf(lat);
+        document.querySelectorAll('.lat-btn').forEach(b => b.classList.toggle('active', b.innerHTML===lat.short));
+        document.getElementById('info-title').innerText   = lat.name;
+        document.getElementById('info-system').innerText  = 'Crystal System: ' + lat.system;
+        document.getElementById('info-desc').innerText    = lat.desc;
+        document.getElementById('info-points').innerText  = lat.points;
+        document.getElementById('info-coord').innerText   = lat.coord;
+        document.getElementById('info-symbol').innerText  = lat.symbol;
+        document.getElementById('info-example').innerText = lat.example;
+        document.getElementById('p-axes').innerText       = lat.axes;
+        document.getElementById('p-angles').innerText     = lat.angles;
+        document.getElementById('badge-system').innerText = lat.system;
+        this.rebuild();
+    }
+
+    clear() {
+        this.objects.forEach(o => this.scene.remove(o)); this.objects=[];
+        if(this.axGrp){ this.scene.remove(this.axGrp); this.axGrp=null; }
+    }
+
+    rebuild() {
+        if(!this.curLat) return;
+        this.clear();
+        const lat = this.curLat;
+        const { corners, extra } = lat.build(6,6,6);
+        const r  = parseFloat(document.getElementById('rng-rad').value);
+        const cC = new THREE.Color(document.getElementById('col-corner').value);
+        const cE = new THREE.Color(document.getElementById('col-extra').value);
+
+        corners.forEach(p => this.addAtom(p, r, cC));
+        extra.forEach(p   => this.addAtom(p, r*0.88, cE));
+
+        if(document.getElementById('chk-wire').checked) {
+            const wc = 0x00c9a7;
+            let w;
+            if(lat.id==='hP') w = this.hexWire(wc);
+            else               w = this.genWire(corners, wc);
+            if(w) this.objects.push(w);
+        }
+        if(document.getElementById('chk-axes').checked) {
+            this.axGrp = this.buildAxes();
+            this.scene.add(this.axGrp);
+        }
+    }
+
+    addAtom(pos, r, col) {
+        const m = new THREE.Mesh(
+            new THREE.SphereGeometry(r, 48, 48),
+            new THREE.MeshPhongMaterial({ color:col, shininess:70 })
+        );
+        m.position.set(...pos);
+        this.scene.add(m);
+        this.objects.push(m);
+    }
+
+    genWire(corners, color) {
+        const edges=[[0,1],[0,2],[1,3],[2,3],[4,5],[4,6],[5,7],[6,7],[0,4],[1,5],[2,6],[3,7]];
+        const pts=[];
+        edges.forEach(([i,j]) => pts.push(...corners[i], ...corners[j]));
+        const geo=new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(pts,3));
+        const line=new THREE.LineSegments(geo, new THREE.LineBasicMaterial({color}));
+        this.scene.add(line);
+        return line;
+    }
+
+    hexWire(color) {
+        const R=5,H=9,pts=[];
+        for(let i=0;i<6;i++){
+            const a1=(Math.PI/3)*i, a2=(Math.PI/3)*((i+1)%6);
+            pts.push(R*Math.cos(a1),H/2,R*Math.sin(a1), R*Math.cos(a2),H/2,R*Math.sin(a2));
+            pts.push(R*Math.cos(a1),-H/2,R*Math.sin(a1), R*Math.cos(a2),-H/2,R*Math.sin(a2));
+            pts.push(R*Math.cos(a1),H/2,R*Math.sin(a1), R*Math.cos(a1),-H/2,R*Math.sin(a1));
+        }
+        const geo=new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(pts,3));
+        const line=new THREE.LineSegments(geo, new THREE.LineBasicMaterial({color}));
+        this.scene.add(line);
+        return line;
+    }
+
+    buildAxes() {
+        const g=new THREE.Group(), L=11;
+        [{d:[1,0,0],c:0xff4444},{d:[0,1,0],c:0x44ff44},{d:[0,0,1],c:0x4488ff}].forEach(({d,c})=>{
+            const pts=new Float32Array([0,0,0, d[0]*L,d[1]*L,d[2]*L]);
+            const geo=new THREE.BufferGeometry();
+            geo.setAttribute('position',new THREE.BufferAttribute(pts,3));
+            g.add(new THREE.Line(geo, new THREE.LineBasicMaterial({color:c})));
+            const cone=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.9,12), new THREE.MeshBasicMaterial({color:c}));
+            cone.position.set(d[0]*L,d[1]*L,d[2]*L);
+            if(d[0]) cone.rotation.z=-Math.PI/2;
+            if(d[2]) cone.rotation.x=Math.PI/2;
+            g.add(cone);
+        });
+        return g;
+    }
+
+    toggleRot() { this.oc.autoRotate = document.getElementById('chk-rot').checked; }
+    resetView() { this.cam.position.set(10,8,22); this.oc.reset(); }
+    prevLattice() { const l=ALL[(this.curIdx-1+ALL.length)%ALL.length]; this.setSystem(Object.keys(LATTICES).find(k=>LATTICES[k].includes(l))); this.load(l); }
+    nextLattice() { const l=ALL[(this.curIdx+1)%ALL.length]; this.setSystem(Object.keys(LATTICES).find(k=>LATTICES[k].includes(l))); this.load(l); }
+
+    animate() {
+        requestAnimationFrame(()=>this.animate());
+        this.oc.update();
+        this.renderer.render(this.scene, this.cam);
+    }
+}
+
+const app = new BravlatSim();
+</script>
+</body>
+</html>

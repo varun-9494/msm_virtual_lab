@@ -1,0 +1,570 @@
+/* BASIC RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* COLORS - Change these if you want different colors */
+:root {
+    --blue: #1a237e;
+    --light-blue: #3949ab;
+    --orange: #ff6f00;
+    --gray: #757575;
+    --light-gray: #fafafa;
+    --white: #ffffff;
+}
+
+body {
+    font-family: 'Open Sans', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: var(--light-gray);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* HEADER */
+.header {
+    background-color: var(--white);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo i {
+    font-size: 2rem;
+    color: var(--blue);
+}
+
+.logo-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--blue);
+    line-height: 1.2;
+}
+
+.logo-subtitle {
+    font-size: 0.85rem;
+    color: var(--gray);
+    line-height: 1.2;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #333;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background-color: var(--blue);
+    color: white;
+}
+
+.mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--blue);
+    cursor: pointer;
+}
+
+/* HERO SECTION */
+.hero {
+    background: linear-gradient(135deg, var(--blue), var(--light-blue));
+    color: white;
+    padding: 60px 0;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.hero-subtitle {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.course-info {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.course-code {
+    background-color: rgba(255,255,255,0.2);
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+.tagline {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* BUTTONS */
+.btn {
+    display: inline-block;
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--orange);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #ff9800;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-secondary:hover {
+    background-color: white;
+    color: var(--blue);
+}
+
+.btn-start {
+    background-color: var(--blue);
+    color: white;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+}
+
+.btn-start:hover {
+    background-color: var(--light-blue);
+}
+
+/* INTRODUCTION */
+.introduction {
+    background-color: white;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.intro-text {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto 20px;
+    color: var(--gray);
+}
+
+.philosophy {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--blue);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+}
+
+/* SECTION TITLES */
+.section-title {
+    font-size: 2rem;
+    color: var(--blue);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.section-subtitle {
+    text-align: center;
+    color: var(--gray);
+    margin-bottom: 40px;
+}
+
+/* LEARNING OBJECTIVES */
+.learning-objectives {
+    padding: 40px 0;
+}
+
+.objectives-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.objective-card {
+    background-color: white;
+    padding: 20px 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: 0.3s;
+}
+
+.objective-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.objective-icon {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 15px;
+    background: linear-gradient(135deg, var(--blue), var(--light-blue));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.objective-icon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.objective-card h3 {
+    color: var(--blue);
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+.objective-card p {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+/* EXPERIMENTS SECTION */
+.experiments {
+    padding: 60px 0;
+}
+
+.unit-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.unit-header {
+    background: linear-gradient(135deg, var(--blue), var(--light-blue));
+    color: white;
+    padding: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.unit-header:hover {
+    opacity: 0.9;
+}
+
+.unit-info h3 {
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.experiment-count {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.unit-toggle {
+    font-size: 1.3rem;
+    transition: transform 0.3s;
+}
+
+.unit-toggle.rotated {
+    transform: rotate(180deg);
+}
+
+.unit-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+}
+
+.unit-content.active {
+    max-height: 2000px;
+}
+
+.experiment-list {
+    padding: 20px;
+}
+
+.experiment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.experiment-item:last-child {
+    border-bottom: none;
+}
+
+.experiment-item:hover {
+    background-color: var(--light-gray);
+}
+
+.exp-info h4 {
+    color: var(--blue);
+    margin-bottom: 5px;
+}
+
+.exp-info p {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.exp-time {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+/* FOOTER */
+.footer {
+    background-color: #212121;
+    color: white;
+    padding: 40px 0 20px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.footer-section h3 {
+    color: var(--orange);
+    margin-bottom: 15px;
+}
+
+.footer-section p {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.footer-section a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-section a:hover {
+    color: var(--orange);
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 20px;
+    text-align: center;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.9rem;
+}
+
+/* MOBILE RESPONSIVE */
+@media screen and (max-width: 768px) {
+    .logo-img {
+        height: 40px;
+    }
+
+    .logo-title {
+        font-size: 1rem;
+    }
+
+    .logo-subtitle {
+        font-size: 0.75rem;
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 70px;
+        right: -100%;
+        width: 250px;
+        background-color: white;
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        transition: right 0.3s ease-in-out;
+        height: calc(100vh - 70px);
+        z-index: 999;
+    }
+    
+    .nav-menu.active {
+        right: 0;
+    }
+    
+    .mobile-toggle {
+        display: block;
+        z-index: 1001;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .experiment-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =============================================
+   VIDEO LECTURES SECTION
+   ============================================= */
+.video-lectures {
+    padding: 80px 0;
+    background: linear-gradient(180deg, #0a0f1a 0%, #0d1220 100%);
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 28px;
+    margin-top: 40px;
+}
+
+.video-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+
+.video-number {
+    background: linear-gradient(90deg, var(--orange), #ff6b35);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 6px 16px;
+}
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+}
+.video-wrapper iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: none;
+}
+
+.placeholder-box {
+    background: #0a0c12;
+}
+.placeholder-inner {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.video-info {
+    padding: 16px 18px 18px;
+}
+.video-info h4 {
+    font-size: 0.92rem;
+    color: #fff;
+    margin-bottom: 5px;
+    line-height: 1.45;
+}
+.video-info h4 i {
+    color: var(--orange);
+    margin-right: 6px;
+}
+.video-info p {
+    font-size: 0.78rem;
+    color: #64748b;
+}
+
+.video-placeholder {
+    opacity: 0.65;
+    border-style: dashed;
+}
+
